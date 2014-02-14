@@ -44,7 +44,7 @@
   </style>
   <![endif]-->
   
-<?
+<?php
   if (!isset($filename))
   {
     $filename="";
@@ -64,7 +64,7 @@ function newWindow(action, eid)
 //-->
 </script>
 
-<?
+<?php
   }
   
   if (strcasecmp($filename, "timeslotedit.php")==0 || strcasecmp($filename, "statistics.php")==0 || strcasecmp($filename, "managetimeslots.php")==0)
@@ -93,7 +93,7 @@ function newWindow() {
     if (mywindow.opener == null) mywindow.opener = self;
 }
 //--></script>
-<?
+<?php
   }
 
   if (strcasecmp($filename, "experimentedit.php")==0)
@@ -109,7 +109,7 @@ function newWindow(action, eid)
 }
 //-->
 </script>
-<?
+<?php
   }
 ?>  
   

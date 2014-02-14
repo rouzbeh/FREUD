@@ -3,7 +3,6 @@
   include "loginCheck.php";
   include "connectDB.php";
   include "library.php";
-  echo ($_SESSION['permission']);
   if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   
   $messageCode=0;
