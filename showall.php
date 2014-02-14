@@ -15,14 +15,14 @@ include "header.php";
 
 //get currdate
 $query_date = "SELECT current_date() as currdate";
-$result_date = mysql_query($query_date) or die(mysql_error());
-$row_date = mysql_fetch_array($result_date, MYSQL_ASSOC);
+$result_date = mysqli_query($connectionDB, $query_date) or die(mysqli_error());
+$row_date = mysqli_fetch_array($result_date, MYSQL_ASSOC);
 $currdate = $row_date['currdate'];
 
 //get currtime
 $query_time = "SELECT current_time() as currtime";
-$result_time = mysql_query($query_time) or die(mysql_error());
-$row_time = mysql_fetch_array($result_time, MYSQL_ASSOC);
+$result_time = mysqli_query($connectionDB, $query_time) or die(mysqli_error());
+$row_time = mysqli_fetch_array($result_time, MYSQL_ASSOC);
 $currtime = $row_time['currtime'];
 
 
@@ -39,17 +39,17 @@ if (isset($_GET['action'])) {
         case 1: {
 
                 $query2 = "SELECT timeslot.*, experiment.title, experiment.location, experiment.hour_credit, experiment.researcher_email FROM timeslot LEFT JOIN experiment ON timeslot.experiment_id=experiment.experiment_id WHERE timeslot.timeslot_id='" . $_GET['tid'] . "'";
-                $result2 = mysql_query($query2) or die(mysql_error());
-                $row2 = mysql_fetch_array($result2, MYSQL_ASSOC);
+                $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error());
+                $row2 = mysqli_fetch_array($result2, MYSQL_ASSOC);
 //check to see if already signed up for experiment //stangles 12/14/11
 				$query0 = "SELECT sign_up_id FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.experiment_id='" . $_GET['eid'] . "' AND participant_email='" . $_SESSION['email'] . "'";
-                $result0 = mysql_query($query0) or die(mysql_error());
-                $num0 = mysql_num_rows($result0);
+                $result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error());
+                $num0 = mysqli_num_rows($result0);
 				if($num0 == 0){
 //insert information into request table
 
                 $query6 = "INSERT INTO signsup (timeslot_id,participant_email) VALUES ('" . $_GET['tid'] . "', '" . $_SESSION['email'] . "')";
-                $result6 = mysql_query($query6);
+                $result6 = mysqli_query($connectionDB, $query6);
                 if ($result6) {
 //construct an email body
                     $email = $_SESSION['email'];
@@ -95,8 +95,8 @@ if (isset($_GET['action'])) {
         case 0: {
 //extract title from experiment with eid
                 $query = "SELECT experiment_id, title FROM experiment WHERE experiment_id='" . $_GET['eid'] . "'";
-                $result = mysql_query($query) or die(mysql_error());
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
+                $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+                $row = mysqli_fetch_array($result, MYSQL_ASSOC);
 
                 echo "<br /><br /><br /><p><div align=\"left\">";
                 echo "<font class='showIcon' id=\"slots\" size=\"3\"><b><span class='manageallt'>" . $row['title'] . " Timeslots</span></b></font><br />";
@@ -110,8 +110,8 @@ if (isset($_GET['action'])) {
 //am I already signed in any timeslot for this experiment??
 //changed July 27 2010
 				$query0 = "SELECT sign_up_id FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.experiment_id='" . $_GET['eid'] . "' AND participant_email='" . $_SESSION['email'] . "'";
-                $result0 = mysql_query($query0) or die(mysql_error());
-                $num0 = mysql_num_rows($result0);
+                $result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error());
+                $num0 = mysqli_num_rows($result0);
 				
 
 
@@ -124,20 +124,20 @@ if (isset($_GET['action'])) {
                 									OR (edate='".$currdate."' AND etime>='".$currtime."')) 
                 									ORDER BY timeslot.edate ASC, timeslot.etime ASC";
 //echo $query;
-                $result = mysql_query($query) or die(mysql_error());
+                $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
                 $counter4 = 0;
-                while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+                while ($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {
 //count how many spaces are already occupied in selected timeslot
                     $query2 = "SELECT * FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.timeslot_id='" . $row['timeslot_id'] . "'";
 //echo $query2;
-                    $result2 = mysql_query($query2) or die(mysql_error());
-                    $num2 = mysql_num_rows($result2);
+                    $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error());
+                    $num2 = mysqli_num_rows($result2);
                     $capacity_left = ($row['capacity_total'] - $num2);
 //echo $capacity_left;
 //am I already signed in this timeslot??
                     $query3 = "SELECT * FROM signsup WHERE participant_email='" . $_SESSION['email'] . "' and timeslot_id='" . $row['timeslot_id'] . "'";
-                    $result3 = mysql_query($query3) or die(mysql_error());
-                    $num3 = mysql_num_rows($result3);
+                    $result3 = mysqli_query($connectionDB, $query3) or die(mysqli_error());
+                    $num3 = mysqli_num_rows($result3);
 
 
                     if (($counter4++) % 2 == 1)
@@ -220,22 +220,22 @@ $query = "SELECT * , 	 (SELECT COUNT(*) FROM timeslot t2
         		 ORDER BY title";
 //echo $query;
 
-$result = mysql_query($query) or die(mysql_error());
-if (mysql_num_rows($result) == 0)
+$result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+if (mysqli_num_rows($result) == 0)
     echo "<tr><td colspan='3'>No available experiments</td></tr>";
 $counter = 0;
-while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+while ($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {
     $counter++;
       if ($row['is_open'] == 1 && $row['exp_completed'] == 0) {
 	
 		//The following sees if you are registered for the specific experiment
 		$thequery = "SELECT * FROM timeslot WHERE experiment_id = " . $row['experiment_id']  . "";
-		$theresult = mysql_query($thequery) or die(mysql_error());
+		$theresult = mysqli_query($thequery) or die(mysqli_error());
 		$thecount = 0;
-		while ($therow = mysql_fetch_array($theresult, MYSQL_ASSOC)) {
+		while ($therow = mysqli_fetch_array($theresult, MYSQL_ASSOC)) {
 			$myquery = "SELECT COUNT(*) FROM signsup WHERE timeslot_id = " . $therow['timeslot_id']  . " AND participant_email = '" . $_SESSION['email'] . "'";
-			$myresult = mysql_query($myquery) or die(mysql_error());
-			while($array = mysql_fetch_row($myresult)){
+			$myresult = mysqli_query($myquery) or die(mysqli_error());
+			while($array = mysqli_fetch_row($myresult)){
 				if( $array[0] == 1)
 					$thecount = 1;
 			}

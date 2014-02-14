@@ -24,8 +24,8 @@
     if ($messageCode==0)
     {
       $query = "SELECT password FROM user WHERE email = '".$_SESSION['email']."'";
-      $result = mysql_query($query) or die(mysql_error());
-      $row = mysql_fetch_array($result, MYSQL_ASSOC);
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+      $row = mysqli_fetch_array($result, MYSQL_ASSOC);
 
 
       if ($row['password']!=md5($_POST['oldpassword']))
@@ -44,7 +44,7 @@
     //save a new password to database
     if ($messageCode==0)
     {
-      $query = mysql_query("UPDATE user SET password='".md5($_POST['newpassword1'])."' WHERE email = '".$_SESSION['email']."'") or die(mysql_error());
+      $query = mysqli_query("UPDATE user SET password='".md5($_POST['newpassword1'])."' WHERE email = '".$_SESSION['email']."'") or die(mysqli_error());
 
       $message = 'Password changed.';
       $messageCode=4;
@@ -65,14 +65,14 @@
 
 
   $query0 = "SELECT timeslot.timeslot_id, timeslot.edate, timeslot.etime, timeslot.experiment_id FROM signsup LEFT JOIN timeslot ON signsup.timeslot_id=timeslot.timeslot_id WHERE signsup.participant_email='".$_SESSION['email']."'";
-  $result0 = mysql_query($query0) or die(mysql_error());
+  $result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error());
   
-  if(mysql_num_rows($result0)==0) echo "<tr><td colspan='4'>You have not signed up for any experiments so far</td></tr>";
-  while($row = mysql_fetch_array($result0, MYSQL_ASSOC))
+  if(mysqli_num_rows($result0)==0) echo "<tr><td colspan='4'>You have not signed up for any experiments so far</td></tr>";
+  while($row = mysqli_fetch_array($result0, MYSQL_ASSOC))
   {
     $query1 = "SELECT title, experiment_id, location, hour_credit FROM experiment WHERE experiment.experiment_id='".$row['experiment_id']."'";
-    $result1 = mysql_query($query1) or die(mysql_error());
-    $row1 = mysql_fetch_array($result1, MYSQL_ASSOC);
+    $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error());
+    $row1 = mysqli_fetch_array($result1, MYSQL_ASSOC);
     
     echo "  <tr>\n";
    // echo "    <td>".$row['timeslot_id']."</td>\n";

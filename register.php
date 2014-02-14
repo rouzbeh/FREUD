@@ -31,8 +31,8 @@ require("require.php");
         $_POST['email'] = addslashes($_POST['email']);
       }
       $emailcheck = $_POST['email'];
-      $check = mysql_query("SELECT email FROM user WHERE email = '$emailcheck'") or die(mysql_error());
-      $check2 = mysql_num_rows($check);
+      $check = mysqli_query("SELECT email FROM user WHERE email = '$emailcheck'") or die(mysqli_error());
+      $check2 = mysqli_num_rows($check);
 
       //if the name exists it gives an error
       if ($check2 != 0) 
@@ -72,7 +72,7 @@ require("require.php");
       
       //now we insert it into the database 
       $query = "INSERT INTO user VALUES ('".$_POST['email']."', '".$_POST['name']."', '".$_POST['surname']."', '".$_POST['passw1']."', 'participant','".$receive."', '".$validUser."', '".$_POST['classyear']."' )";
-      $result = mysql_query($query) or die(mysql_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
     
 
       //Now we let them know if their registration was successful
@@ -115,18 +115,18 @@ require("require.php");
         <tr>
           <td>Email</td>
           <td>
-            <input type="text" class='textInput' name="email" maxlength="40" value="<? if ($messageCode!=0){echo $_POST['email'];} ?>">
+            <input type="text" class='textInput' name="email" maxlength="40" value="<?php if ($messageCode!=0){echo $_POST['email'];} ?>">
           </td>
         </tr>
         <tr>
           <td>First name:</td><td>
-            <input type="text" name="name" class='textInput' maxlength="20" value="<? if ($messageCode!=0){echo $_POST['name'];} ?>">
+            <input type="text" name="name" class='textInput' maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['name'];} ?>">
           </td>
         </tr>
         <tr>
           <td>Last name:</td>
           <td>
-            <input type="text" name="surname"  class='textInput' maxlength="20" value="<? if ($messageCode!=0){echo $_POST['surname'];} ?>">
+            <input type="text" name="surname"  class='textInput' maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['surname'];} ?>">
           </td>
         </tr>
         <tr>
@@ -161,7 +161,7 @@ require("require.php");
         <tr>
           <td>Check this box to receive <br>weekly emails to notify you of <br>all the research <br>opportunities available:</td>
           <td>
-            <input type="checkbox" name="receiveMail" <? if ($messageCode!=0){ if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") echo "checked";} ?>>
+            <input type="checkbox" name="receiveMail" <?php if ($messageCode!=0){ if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") echo "checked";} ?>>
           </td>
         </tr>
         <tr>

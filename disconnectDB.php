@@ -1,3 +1,3 @@
 <?php
-  mysql_close($connectionDB);
+  mysqli_close($connectionDB);
 ?>

@@ -8,9 +8,9 @@
   if (isset($_GET['val']))
   {
       $query = "SELECT * FROM user WHERE validUser='".$_GET['val']."'";
-      $result = mysql_query($query) or die(mysql_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
-      $check=mysql_num_rows($result);
+      $check=mysqli_num_rows($result);
   
       //confirmation code not found
       if ($check != 1) 
@@ -22,7 +22,7 @@
       if ($messageCode==0)
       {
         $query = "UPDATE user SET validUser='0' WHERE validUser='".$_GET['val']."'";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
         $message = "You have been successfully registered.";
         $messageCode=2;

@@ -62,34 +62,34 @@
 					echo "<b style='line-height: 1.8em; '>deleted: experiments<br />";
 					$query = "DELETE FROM experiment";
 					//echo $query;
-					$result = mysql_query($query) or die(mysql_error()); 
+					$result = mysqli_query($connectionDB, $query) or die(mysqli_error()); 
 				}
 			
 				if($_POST['request'])   { 
 					echo "deleted: requests...<br />";
 					$query = "DELETE FROM request";
 					//echo $query; 
-					$result = mysql_query($query) or die(mysql_error()); 
+					$result = mysqli_query($connectionDB, $query) or die(mysqli_error()); 
 				} 
 				if($_POST['signsup'])   { 
 					echo "deleted: signsups...<br />"; 
 					$query = "DELETE FROM signsup";
 					//echo $query;
-					$result = mysql_query($query) or die(mysql_error()); 
+					$result = mysqli_query($connectionDB, $query) or die(mysqli_error()); 
 				}
 			
 				if($_POST['timeslot'])  { 
 					echo "deleted: timeslots...<br />";
 					$query = "DELETE FROM timeslot";
 					//echo $query;
-					$result = mysql_query($query) or die(mysql_error()); 
+					$result = mysqli_query($connectionDB, $query) or die(mysqli_error()); 
 				}
 			
 				if($_POST['user'])      { 
 					echo "deleted: users...<br />";
 					$query = "DELETE FROM user WHERE role!='admin'";            
 					//echo $query;
-					$result = mysql_query($query) or die(mysql_error());  
+					$result = mysqli_query($connectionDB, $query) or die(mysqli_error());  
 				}
 				if($_POST['grad'])      { 
 					echo "deleted: graduated users...<br />";
@@ -100,7 +100,7 @@
 					}
 					$query = "DELETE FROM user WHERE classyear <= '" . $grad_year . "' AND role != 'admin'";            
 					//echo $query;
-					$result = mysql_query($query) or die(mysql_error());  
+					$result = mysqli_query($connectionDB, $query) or die(mysqli_error());  
 				}
 			
 				echo "</b><br /><br />All done, return to <a href='index1.php'>Main page</a><br /><br />";        

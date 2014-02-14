@@ -88,7 +88,7 @@ function onLD()
       if (isset($_POST['iscompleted']) && $_POST['iscompleted']=="on") $xiscompleted=1; else {$xiscompleted=0;} //processing of checkbox
 
       $query = "UPDATE experiment SET title = '".$_POST['title']."', is_open='".$xisopen."', description = '".$_POST['description']."', hour_credit = '".$_POST['hour_credit']."', exp_completed='".$xiscompleted."', location='".$_POST['location']."', advisor='".$_POST['advisor']."', researcher_email='".$_POST['researcher_email']."'  WHERE experiment_id = '".$_GET['eid']."'";
-      $result = mysql_query($query) or die(mysql_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
     }
   }
 
@@ -104,8 +104,8 @@ function onLD()
         echo "<tr><th colspan='2'>Experiment Detail</th></th>";       
 
         $query = "SELECT * FROM experiment WHERE experiment_id='".$_GET['eid']."'";
-        $result = mysql_query($query) or die(mysql_error());
-        $row = mysql_fetch_array($result, MYSQL_ASSOC);
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $row = mysqli_fetch_array($result, MYSQL_ASSOC);
 
         echo "    <tr class='sudy'>\n";
         echo "      <td>";
@@ -180,9 +180,9 @@ function onLD()
         $listofresearchers=array();
 
         $query = "SELECT email FROM user WHERE role='researcher' OR role='admin' ORDER BY `user`.`email`ASC";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
-        while($row = mysql_fetch_array($result)) 
+        while($row = mysqli_fetch_array($result)) 
         {
           array_push($listofresearchers, $row['email']);
         }
@@ -192,8 +192,8 @@ function onLD()
         echo "  <tbody>\n";
 
         $query = "SELECT * FROM experiment WHERE experiment_id='".$_GET['eid']."'";
-        $result = mysql_query($query) or die(mysql_error());
-        $row = mysql_fetch_array($result, MYSQL_ASSOC);
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $row = mysqli_fetch_array($result, MYSQL_ASSOC);
 
         echo "    <tr>\n";
         echo "      <td>\n";

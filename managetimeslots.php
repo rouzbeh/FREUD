@@ -19,17 +19,17 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
 
   function sendMailToParticipants($id){
         $query = "SELECT participant_email FROM signsup WHERE timeslot_id='$id'";
-        $result = mysql_query($query) or die(mysql_error());        
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());        
         $emails = Array();
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
+        while($row = mysqli_fetch_array($result, MYSQL_ASSOC)){
              $emails[] = $row['participant_email'];   
         }
         
        
         $query2 = "SELECT title, hour_credit, location, researcher_email, etime,edate  FROM experiment INNER JOIN timeslot ON experiment.experiment_id=timeslot.experiment_id WHERE timeslot_id='".$id."'";
         //echo $query2;
-        $result2 = mysql_query($query2) or die(mysql_error());
-        $row2 = mysql_fetch_array($result2, MYSQL_ASSOC);
+        $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error());
+        $row2 = mysqli_fetch_array($result2, MYSQL_ASSOC);
     
         //construct an email body
         $email= implode($emails,', ');
@@ -65,9 +65,9 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
   function sendMailToUser($id){ // signup id
         $query = "SELECT participant_email FROM signsup WHERE sign_up_id='$id'";
         //echo $query;
-        $result = mysql_query($query) or die(mysql_error());        
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());        
         $emails = Array();
-        $row = mysql_fetch_array($result, MYSQL_ASSOC);             
+        $row = mysqli_fetch_array($result, MYSQL_ASSOC);             
         $email = $row['participant_email'];   
         //echo $email;
         
@@ -80,8 +80,8 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
                     ON signsup.timeslot_id = timeslot.timeslot_id
                     WHERE signsup.sign_up_id='".$id."'";
         //echo $query2;
-        $result2 = mysql_query($query2) or die(mysql_error());
-        $row2 = mysql_fetch_array($result2, MYSQL_ASSOC);
+        $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error());
+        $row2 = mysqli_fetch_array($result2, MYSQL_ASSOC);
         
         //construct an email body
         $email=$_SESSION['email'];
@@ -175,7 +175,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
         //now we insert it into the database 
         $query = "INSERT INTO timeslot VALUES ('0', '".$_REQUEST['experiment_id']."', '".$_REQUEST['edate']."', '".$etime1."', '0','".$_REQUEST[$capacity]."' )";
         //echo $query;
-        $result = mysql_query($query) or die(mysql_error());              
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());              
       }  
       //Print information about success of creation
       $message="Timeslot(s) created!";
@@ -197,7 +197,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
         sendMailToParticipants($_GET['id']); // notify all signed user about it
         
         $query = "DELETE FROM timeslot WHERE timeslot_id = '".$_GET['id']."'";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
         header("Location: ".$filename."?experiment_id=".$_REQUEST['experiment_id']);
         break;
       }
@@ -207,7 +207,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
         sendMailToUser($_GET['id']); // notify user about it
         
         $query1 = "DELETE FROM signsup WHERE sign_up_id='".$_GET['id']."'";
-        $result1 = mysql_query($query1) or die(mysql_error());
+        $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error());
         break;       
       } 
     }
@@ -241,9 +241,9 @@ echo "<font size='3' style='display:block; padding: 25px 10px 10px 0px;'><b>Time
 <?
         //find all experiments
         $query = "SELECT experiment_id, title FROM user INNER JOIN experiment ON user.email=experiment.researcher_email ORDER BY `experiment`.`title` ASC";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
         {
           echo "        <option value=\"".$row['experiment_id']."\"";
           if (isset($_REQUEST['experiment_id']) && $experiment_id==$row['experiment_id']){echo " selected=\"yes\" ";$experiment_name=$row['title'];}
@@ -286,10 +286,10 @@ $query = "SELECT timeslot.*, experiment.title, experiment.researcher_email,
             ORDER BY timeslot.edate ASC, timeslot.etime ASC";      
             //echo $query;           
   
-  $result = mysql_query($query) or die(mysql_error());
+  $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
   $counter=0;
-  if(mysql_num_rows($result)==0) echo "<tr><td colspan='5'>No available timeslots</td></tr>";
-  while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+  if(mysqli_num_rows($result)==0) echo "<tr><td colspan='5'>No available timeslots</td></tr>";
+  while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
   {
     if(($counter++)%2==0)  echo "  <tr class='sudy'>\n";
     else                   echo "  <tr class='lichy'>\n";    
@@ -317,7 +317,7 @@ $query = "SELECT timeslot.*, experiment.title, experiment.researcher_email,
       case 1:
       {
         $query = "SELECT * FROM signsup LEFT JOIN timeslot ON signsup.timeslot_id=timeslot.timeslot_id WHERE signsup.timeslot_id = '".$_GET['id']."'";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
         //generate table with all the data
         echo "<br /><br /><br /><p><div id='users' align=\"left\">";
@@ -331,9 +331,9 @@ $query = "SELECT timeslot.*, experiment.title, experiment.researcher_email,
         echo "    </tr>\n"; 
         
         $counter2 = 0;  
-        if(mysql_num_rows($result)==0) echo "<tr><td colspan='2'>No participants</td></tr>";
+        if(mysqli_num_rows($result)==0) echo "<tr><td colspan='2'>No participants</td></tr>";
         
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
         {        
           if(($counter2++)%2==0)  echo "  <tr class='sudy'>\n";
           else                   echo "  <tr class='lichy'>\n";
@@ -430,7 +430,7 @@ $query = "SELECT timeslot.*, experiment.title, experiment.researcher_email,
   <tr><th colspan='5'>New Timeslot</th></tr>
   <tr>
     <td>Date:<br><small>(mm/dd/yyyy)</small></td><td>    
-      <input type="text" class='textInput' name="edate" maxlength="10" value="<? if ($rememberFormValues!=0 && isset($_REQUEST['edate'])){echo $original_date;} ?>" >
+      <input type="text" class='textInput' name="edate" maxlength="10" value="<?php if ($rememberFormValues!=0 && isset($_REQUEST['edate'])){echo $original_date;} ?>" >
     </td>
     <td>
       <a style='text-decoration:underline; cursor:hand;' onClick="newWindow()">Show calendar</a>

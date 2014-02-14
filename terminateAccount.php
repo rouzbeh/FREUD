@@ -27,8 +27,8 @@
          echo "<div style=\"height:30px; float:left;width:100px\"><a href='aboutme.php'>No</div><br style=\"clear:both\">";
       }
       elseif($_SESSION['permission']=="participant") { 
-          mysql_query("DELETE FROM signsup WHERE participant_email = '".$_SESSION['email']."'");
-          mysql_query("DELETE FROM user WHERE email = '".$_SESSION['email']."'");
+          mysqli_query("DELETE FROM signsup WHERE participant_email = '".$_SESSION['email']."'");
+          mysqli_query("DELETE FROM user WHERE email = '".$_SESSION['email']."'");
           
           
           unset($_SESSION['isConnected']);

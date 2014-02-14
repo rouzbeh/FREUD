@@ -29,15 +29,15 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 	if($_GET['type']=="experimenters"){
  	  
         $query = "SELECT email FROM user WHERE role='researcher' ORDER BY `user`.`email`DESC";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 		$experimenter_email_list = '';
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
         {
           $experimenter_email_list = $row['email'] . ", " . $experimenter_email_list;
         }
 		?>
 		Send an email to experimenters.
-		<form action="<? echo $_SERVER['PHP_SELF']; ?>" method="post">
+		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 			<table>
 				<tr>
 					<td>To:</td>
@@ -59,11 +59,11 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 					<td>From:</td>
 					<td>
 						<select name="from">
-						<option><? echo $server_email_address; ?></option>
+						<option><?php echo $server_email_address; ?></option>
 <?
 						$query = "SELECT email FROM user WHERE role='admin' ORDER BY `user`.`email`ASC";
-						$result = mysql_query($query) or die(mysql_error());
-						while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+						$result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+						while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
 						{
 							echo "<option>" . $row['email'] . "</option>\n";
 						}
@@ -83,15 +83,15 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 	} elseif($_GET['type']=="all"){
  	  
         $query = "SELECT email FROM user ORDER BY `user`.`email`DESC";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 		$email_list = '';
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
         {
           $email_list = $row['email'] . ", " . $email_list;
         }
 		?>
 		Send an email to EVERYONE.
-		<form action="<? echo $_SERVER['PHP_SELF']; ?>" method="post">
+		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 			<table>
 				<tr>
 					<td>To:</td>
@@ -115,8 +115,8 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 						<select name="from">
 <?
 						$query = "SELECT email FROM user WHERE role='admin' ORDER BY `user`.`email`ASC";
-						$result = mysql_query($query) or die(mysql_error());
-						while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+						$result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+						while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
 						{
 							echo "<option>" . $row['email'] . "</option>\n";
 						}

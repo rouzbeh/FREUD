@@ -16,7 +16,7 @@
    </div> 
   
 <div id="helper">
-<?      
+<?php      
           if (isset($_SESSION['isConnected']))
           {
             if($_SESSION['permission']=="participant") echo "<a href=\"showall.php\">Home</a>\n";

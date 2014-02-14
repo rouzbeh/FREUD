@@ -28,9 +28,9 @@
       
       //is our username(email) in database?
       $query = "SELECT * FROM user WHERE email='".$_POST['email']."'";
-      $result = mysql_query($query) or die(mysql_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
-      $check=mysql_num_rows($result);
+      $check=mysqli_num_rows($result);
   
       if ($check != 1) 
       {
@@ -41,7 +41,7 @@
       //check if passwords match
       if ($messageCode==0 || $messageCode==10)
       {
-        $row = mysql_fetch_array($result);
+        $row = mysqli_fetch_array($result);
       
         //create session variables, if passwords match
         if (md5($_POST['passw1'])==$row['password'])
@@ -73,7 +73,7 @@
   <font size="2"> 
   <!-- type the comment here-->
   
-  <? echo $welcome_message; ?>
+  <?php echo $welcome_message; ?>
   
   <!-- type the comment here-->
    </font>
@@ -107,7 +107,7 @@
 </div>
 </div>
 
-<?  
+<?php  
   
   include "disconnectDB.php";
   

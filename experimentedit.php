@@ -37,7 +37,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 
       //now we insert it into the database 
       $query = "INSERT INTO experiment VALUES ('0', '".$_POST['title']."', '".$isopen."', '".$_POST['description']."', '".$_POST['hour_credit']."', '".$iscompleted."','".$_POST['location']."', '".$_POST['researcher_email']."', '".$_POST['advisor']."')";
-      $result = mysql_query($query) or die(mysql_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
     
       //Print information about success of creation
       $message="Experiment created!";
@@ -64,7 +64,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
         if (isset($_POST['iscompleted']) && $_POST['iscompleted']=="on") $xiscompleted=1; else {$xiscompleted=0;} //processing of checkbox
 
         $query = "UPDATE experiment SET title = '".$_POST['title']."', is_open='".$xisopen."', description = '".$_POST['description']."', hour_credit = '".$_POST['hour_credit']."', exp_completed='".$xiscompleted."', location='".$_POST['location']."', researcher_email='".$_POST['researcher_email']."'  WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
         break;
       }
 */
@@ -72,25 +72,25 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       {
         //remove experiment from DB
         $query = "DELETE FROM experiment WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
         //find all timeslots, which correspond to an experiment; remove dependencies between request, signsup tables
         $query = "SELECT timeslot_id FROM timeslot WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysql_query($query) or die(mysql_error());
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
         {       
           $timeslotid=$row['timeslot_id'];
 
           $query0 = "DELETE FROM request WHERE timeslot_id = '".$timeslotid."'";
-          $result0 = mysql_query($query0) or die(mysql_error());
+          $result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error());
 
           $query1 = "DELETE FROM signsup WHERE timeslot_id = '".$timeslotid."'";
-          $result1 = mysql_query($query1) or die(mysql_error());
+          $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error());
         }
 
         //remove corresponding timeslots from DB
         $query = "DELETE FROM timeslot WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
         break;
       }
@@ -109,11 +109,11 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   echo "    </tr>\n";
 
   $query = "SELECT * FROM experiment ORDER BY experiment_id ASC";
-  $result = mysql_query($query) or die(mysql_error());
+  $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
   $counter6 = 0;
-  if(mysql_num_rows($result)==0) echo "<tr><td colspan='5'>No available experiments</td></tr>";
-  while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+  if(mysqli_num_rows($result)==0) echo "<tr><td colspan='5'>No available experiments</td></tr>";
+  while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
   {       
     if(($counter6++)%2==0)  echo "  <tr class='sudy'>\n";
     else                   echo "  <tr class='lichy'>\n";
@@ -162,27 +162,27 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   <tr><th colspan='2'>New Experiment</th></tr>
   <tr>    
     <td>Title:</td><td>
-      <input type="text" class='textInput' name="title" maxlength="50" value="<? if ($messageCode!=0){echo $_POST['title'];} ?>">
+      <input type="text" class='textInput' name="title" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['title'];} ?>">
     </td>
   </tr>
   <tr>
     <td>Description:</td><td>
-      <textarea name="description" class='textInput'  rows="15" cols="50"><? if ($messageCode!=0){echo $_POST['description'];} ?></textarea>
+      <textarea name="description" class='textInput'  rows="15" cols="50"><?php if ($messageCode!=0){echo $_POST['description'];} ?></textarea>
     </td>
   </tr>
   <tr>
     <td>Hour/credit:</td><td>
-      <input type="text" class='textInput'  name="hour_credit" maxlength="20" value="<? if ($messageCode!=0){echo $_POST['hour_credit'];} ?>">
+      <input type="text" class='textInput'  name="hour_credit" maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['hour_credit'];} ?>">
     </td>
   </tr>
   <tr>
     <td>Location:</td><td>
-      <input type="text" class='textInput'  name="location" maxlength="50" value="<? if ($messageCode!=0){echo $_POST['location'];} ?>">
+      <input type="text" class='textInput'  name="location" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['location'];} ?>">
     </td>
   </tr>
   <tr>
     <td>Open to sign up?</td><td>    
-      <input type="checkbox" class='textInput'  name="isopen" <? if (!isset($_POST['submit']) || (isset($_POST['isopen']) && $_POST['isopen']=="on")) echo "checked"; ?>>
+      <input type="checkbox" class='textInput'  name="isopen" <?php if (!isset($_POST['submit']) || (isset($_POST['isopen']) && $_POST['isopen']=="on")) echo "checked"; ?>>
     </td>
   </tr>
   <tr>
@@ -190,9 +190,9 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       <select name="researcher_email">
 <?
         $query = "SELECT email FROM user WHERE role='researcher' OR role='admin' ORDER BY `user`.`email`ASC";
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
 
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
         {
           echo "        <option";
           if ($messageCode!=0){ if (isset($_POST['researcher_email']) && (strcasecmp($_POST['researcher_email'], $row['email']) == 0)) echo " selected=\"yes\"";}
@@ -204,7 +204,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   </tr>
     <tr>
     <td>Advisor:</td><td>    
-      <input type="text" class='textInput'  name="advisor" maxlength="3" value="<? if ($messageCode!=0){echo $_POST['advisor'];} ?>">
+      <input type="text" class='textInput'  name="advisor" maxlength="3" value="<?php if ($messageCode!=0){echo $_POST['advisor'];} ?>">
     </td>
   </tr>
   <tr>

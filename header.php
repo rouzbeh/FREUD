@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-  <title><? echo $title; ?></title>  
+  <title><?php echo $title; ?></title>  
   <meta content="text/html; charset=utf-8" http-equiv="Content-type" />     
   <link rel="stylesheet" href="style.css" type="text/css"> 
   
