@@ -29,9 +29,9 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 	if($_GET['type']=="experimenters"){
  	  
         $query = "SELECT email FROM user WHERE role='researcher' ORDER BY `user`.`email`DESC";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 		$experimenter_email_list = '';
-        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
         {
           $experimenter_email_list = $row['email'] . ", " . $experimenter_email_list;
         }
@@ -62,8 +62,8 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 						<option><?php echo $server_email_address; ?></option>
 <?
 						$query = "SELECT email FROM user WHERE role='admin' ORDER BY `user`.`email`ASC";
-						$result = mysqli_query($connectionDB, $query) or die(mysqli_error());
-						while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+						$result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+						while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 						{
 							echo "<option>" . $row['email'] . "</option>\n";
 						}
@@ -83,9 +83,9 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 	} elseif($_GET['type']=="all"){
  	  
         $query = "SELECT email FROM user ORDER BY `user`.`email`DESC";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 		$email_list = '';
-        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
         {
           $email_list = $row['email'] . ", " . $email_list;
         }
@@ -115,8 +115,8 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 						<select name="from">
 <?
 						$query = "SELECT email FROM user WHERE role='admin' ORDER BY `user`.`email`ASC";
-						$result = mysqli_query($connectionDB, $query) or die(mysqli_error());
-						while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+						$result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+						while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 						{
 							echo "<option>" . $row['email'] . "</option>\n";
 						}

@@ -8,7 +8,7 @@
   if (isset($_GET['val']))
   {
       $query = "SELECT * FROM user WHERE validUser='".$_GET['val']."'";
-      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
       $check=mysqli_num_rows($result);
   
@@ -22,7 +22,7 @@
       if ($messageCode==0)
       {
         $query = "UPDATE user SET validUser='0' WHERE validUser='".$_GET['val']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
         $message = "You have been successfully registered.";
         $messageCode=2;

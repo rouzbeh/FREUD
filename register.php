@@ -1,7 +1,7 @@
 <?php
   $filename="register.php";  
+  require("require.php");
   include "connectDB.php";
-require("require.php");
   $message="";
   $messageCode=0;
 
@@ -15,12 +15,11 @@ require("require.php");
       $messageCode=1;
     }
 
-
-    if (!eregi("[a-zA-Z0-9](@" . $email_domain . ")", $_POST['email']))
-    {
-      $message = 'Invalid email address';
-      $messageCode=2;
-    }
+    //if (!eregi("[a-zA-Z0-9](@" . $email_domain . ")", $_POST['email']))
+    //{
+    //  $message = 'Invalid email address';
+    //  $messageCode=2;
+    //}
 
     //if all information entered, no empty fields
     if ($messageCode==0)
@@ -31,7 +30,10 @@ require("require.php");
         $_POST['email'] = addslashes($_POST['email']);
       }
       $emailcheck = $_POST['email'];
-      $check = mysqli_query("SELECT email FROM user WHERE email = '$emailcheck'") or die(mysqli_error());
+      $check = mysqli_query("SELECT email FROM user WHERE email = '$emailcheck'") ;//or die(mysqli_error($connectionDB));
+echo $check;?>
+fnjsdklfhjs
+<?php
       $check2 = mysqli_num_rows($check);
 
       //if the name exists it gives an error
@@ -72,7 +74,7 @@ require("require.php");
       
       //now we insert it into the database 
       $query = "INSERT INTO user VALUES ('".$_POST['email']."', '".$_POST['name']."', '".$_POST['surname']."', '".$_POST['passw1']."', 'participant','".$receive."', '".$validUser."', '".$_POST['classyear']."' )";
-      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
     
 
       //Now we let them know if their registration was successful

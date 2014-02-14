@@ -17,17 +17,17 @@
   // sends email to users while the timeslot is deleted
   function sendMailToParticipants($id){
         $query = "SELECT participant_email FROM signsup WHERE timeslot_id='$id'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());        
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));        
         $emails = Array();
-        while($row = mysqli_fetch_array($result, MYSQL_ASSOC)){
+        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
              $emails[] = $row['participant_email'];   
         }
         
        
         $query2 = "SELECT title, hour_credit, location, researcher_email, etime,edate  FROM experiment INNER JOIN timeslot ON experiment.experiment_id=timeslot.experiment_id WHERE timeslot_id='".$id."'";
         //echo $query2;
-        $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error());
-        $row2 = mysqli_fetch_array($result2, MYSQL_ASSOC);
+        $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error($connectionDB));
+        $row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC);
     
         //construct an email body
         $email= implode($emails,', ');
@@ -64,9 +64,9 @@
   function sendMailToUser($id){ // signup id
         $query = "SELECT participant_email FROM signsup WHERE sign_up_id='$id'";
         //echo $query;
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());        
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));        
         $emails = Array();
-        $row = mysqli_fetch_array($result, MYSQL_ASSOC);             
+        $row = mysqli_fetch_array($result, MYSQLI_ASSOC);             
         $email = $row['participant_email'];   
         //echo $email;
         
@@ -79,8 +79,8 @@
                     ON signsup.timeslot_id = timeslot.timeslot_id
                     WHERE signsup.sign_up_id='".$id."'";
         //echo $query2;
-        $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error());
-        $row2 = mysqli_fetch_array($result2, MYSQL_ASSOC);
+        $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error($connectionDB));
+        $row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC);
         
         //construct an email body
         //$email=$_SESSION['email'];
@@ -176,7 +176,7 @@
 
         //now we insert it into the database 
         $query = "INSERT INTO timeslot VALUES ('0', '".$_POST['experiment_id']."', '".$_POST['edate']."', '".$etime1."', '0','".$_POST[$capacity]."' )";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());              
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));              
       }  
       //Print information about success of creation
       $message="Timeslot(s) created!";
@@ -199,7 +199,7 @@
         sendMailToParticipants($_GET['id']); // notify all signed user about it
         
         $query = "DELETE FROM timeslot WHERE timeslot_id = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
         header("Location: ".$filename."?experiment_id=".$_REQUEST['experiment_id']);
         break;
       }
@@ -210,7 +210,7 @@
         sendMailToUser($_GET['id']); // notify user about it
         
         $query1 = "DELETE FROM signsup WHERE sign_up_id='".$_GET['id']."'";
-        $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error());
+        $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error($connectionDB));
         break;       
       } 
 
@@ -275,10 +275,10 @@
             ORDER BY timeslot.edate ASC, timeslot.etime ASC"; 
             //DATE_SUB(CURDATE(),INTERVAL 14 DAY) <= timeslot.edate AND          
   //echo $query;
-  $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+  $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
   $counter=0;
   if(mysqli_num_rows($result)==0) echo "<tr><td colspan='7'>No timeslots available</td></tr>";
-  while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
   {
     if(($counter++)%2==0)  echo "  <tr class='sudy'>\n";
     else                   echo "  <tr class='lichy'>\n";
@@ -307,7 +307,7 @@
       case 1:
       {
         $query = "SELECT * FROM signsup LEFT JOIN timeslot ON signsup.timeslot_id=timeslot.timeslot_id WHERE signsup.timeslot_id = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
         //generate table with all the data
         echo "<br /><br /><br /><p><div id='users' align=\"left\">";
@@ -322,7 +322,7 @@
         
         $counter2 = 0;  
         if(mysqli_num_rows($result)==0) echo "<tr><td colspan='2'>No participants found</td></tr>";
-        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
         {        
           if(($counter2++)%2==0)  echo "  <tr class='sudy'>\n";
           else                   echo "  <tr class='lichy'>\n";
@@ -416,7 +416,7 @@
   //find all experiments lead by user with currently logged researcher
   $query = "SELECT experiment_id, title FROM user inner JOIN experiment ON user.email=experiment.researcher_email WHERE email='".$_SESSION['email']."'";
   //echo $query;
-  $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+  $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
   $num =  mysqli_num_rows($result);
   if($num==0) echo 'You have no experiment assigned';
   else {
@@ -431,7 +431,7 @@
       <select name="experiment_id">
 <?
         
-        while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
         {
           echo "        <option value=\"".$row['experiment_id']."\"";
           if ($rememberFormValues!=0 && isset($_POST['experiment_id']) && $_POST['experiment_id']==$row['experiment_id']){echo " selected=\"yes\" ";}

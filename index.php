@@ -28,7 +28,7 @@
       
       //is our username(email) in database?
       $query = "SELECT * FROM user WHERE email='".$_POST['email']."'";
-      $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+      $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
       $check=mysqli_num_rows($result);
   

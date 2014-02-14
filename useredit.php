@@ -39,14 +39,14 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
         if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") $xreceiveMail=1; else {$xreceiveMail=0;} //processing of checkbox
 
         $query = "UPDATE user SET name = '".$_POST['name']."', surname = '".$_POST['surname']."',  role='".$_POST['role']."', receiveMail='".$xreceiveMail."', classyear='".$_POST['classyear']."' WHERE email = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
         break;
       }
       case 2:
       {
         //reset password to default
         $query = "UPDATE user SET password = '" . $default_password . "' WHERE email = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
         $messageCode=1;
         $message="Password for ".$_GET['id']." changed '" . $the_default_password . "'";
@@ -57,7 +57,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       {
         //remove user from DB
         $query = "DELETE FROM user WHERE email = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
         $messageCode=2;
         $message="A user with an email address ".$_GET['id']." was removed from the database.";
@@ -73,14 +73,14 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           {
             //delete user info
             $query = "DELETE FROM user WHERE email = '".$_POST["h".$checkboxname]."'";
-            $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+            $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
             //delete all requests and signsups
             $query = "DELETE FROM request WHERE participant_email = '".$_POST["h".$checkboxname]."'";
-            $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+            $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
             $query = "DELETE FROM signsup WHERE participant_email = '".$_POST["h".$checkboxname]."'";
-            $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+            $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
 
           }
         }
@@ -121,12 +121,12 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   echo "    </tr>\n";
 
   $query = "SELECT * FROM user ORDER BY email ASC";
-  $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
+  $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
   $num = mysqli_num_rows($result)-1;
   $id=0;
   
   $counter4 = 0;
-  while($row = mysqli_fetch_array($result, MYSQL_ASSOC))
+  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
   {
     if(($counter4++)%2==0)  echo "  <tr class='sudy'>\n";
     else                   echo "  <tr class='lichy'>\n";

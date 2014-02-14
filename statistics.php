@@ -1,12 +1,9 @@
 <?php
   $filename="statistics.php";
-
   include "loginCheck.php";
-  
   include "connectDB.php";
-
   include "library.php";
-
+  echo ($_SESSION['permission']);
   if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   
   $messageCode=0;
@@ -33,7 +30,7 @@
         <tr>
       </table>
     </form><br /><br />
-<?
+<?php
   
   //apply filter
   if (isset($_POST['submit']))
@@ -44,19 +41,19 @@
   }
  
   $query = "SELECT current_date() as currdate";
-  $result = mysqli_query($connectionDB, $query) or die(mysqli_error());
-  $row = mysqli_fetch_array($result, MYSQL_ASSOC);
+  $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
   $currdate=$row['currdate'];
   
   $query0 = "SELECT user.email, user.name, user.surname, user.role FROM user ORDER BY email ASC";
-  $result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error());
+  $result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error($connectionDB));
 
-  while($row0 = mysqli_fetch_array($result0, MYSQL_ASSOC))
+  while($row0 = mysqli_fetch_array($result0, MYSQLI_ASSOC))
   {
     echo "<h3>".$row0['email']." (".$row0['name']." ".$row0['surname'].")</h3><br />\n";
     
     $query1 = "SELECT timeslot.timeslot_id, timeslot.edate, timeslot.etime, timeslot.experiment_id FROM signsup LEFT JOIN timeslot ON signsup.timeslot_id=timeslot.timeslot_id WHERE signsup.participant_email='".$row0['email']."' and timeslot.edate>'".$startdate."' and timeslot.edate<'".$currdate."'";
-    $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error());
+    $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error($connectionDB));
 
     echo "<table width=\"100%\">\n";
     echo "<tbody>\n";
@@ -65,12 +62,12 @@
     echo "</tr>\n";
     
     $hourcreditsum=0;
-    while($row1 = mysqli_fetch_array($result1, MYSQL_ASSOC))
+    while($row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC))
     {
       echo "<tr>\n";
       $query2 = "SELECT title, hour_credit, experiment_id FROM experiment WHERE experiment.experiment_id='".$row1['experiment_id']."'";
-      $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error());
-      $row2 = mysqli_fetch_array($result2, MYSQL_ASSOC);
+      $result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error($connectionDB));
+      $row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC);
       echo "<td>".$row1['timeslot_id']."</td>\n";
       echo "<td>".transformDateYearLast($row1['edate']).", ".dayofweek($row1['edate'])."</td>\n";
       echo "<td>".time24to12($row1['etime'])."</td>\n";
