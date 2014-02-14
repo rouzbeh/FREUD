@@ -238,7 +238,7 @@ echo "<font size='3' style='display:block; padding: 25px 10px 10px 0px;'><b>Time
   <tr>
     <th colspan='2'>Select Experiment:</th></tr><tr><td>
       <select name="experiment_id">
-<?
+<?php
         //find all experiments
         $query = "SELECT experiment_id, title FROM user INNER JOIN experiment ON user.email=experiment.researcher_email ORDER BY `experiment`.`title` ASC";
         $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
@@ -425,7 +425,7 @@ $query = "SELECT timeslot.*, experiment.title, experiment.researcher_email,
   echo "</div></p><br />";
 ?>
 <!-- Form with text fields etc. -->
-<form name="data" action="<?echo $filename; echo '?experiment_id='.$experiment_id.'#add';?>" method="post">
+<form name="data" action="<?php echo $filename; echo '?experiment_id='.$experiment_id.'#add';?>" method="post">
 <table style="width:auto">  
   <tr><th colspan='5'>New Timeslot</th></tr>
   <tr>
@@ -437,7 +437,7 @@ $query = "SELECT timeslot.*, experiment.title, experiment.researcher_email,
     </td>
   </tr>
 
-<?
+<?php
   for ($ii=1; $ii<=$iimax; $ii++)
   {
     printTimeslot($ii, $iimax);
@@ -450,7 +450,7 @@ $query = "SELECT timeslot.*, experiment.title, experiment.researcher_email,
       </form>
     </td>
     <td>
-      <form name="data2" action="<?echo $filename; echo '?experiment_id='.$experiment_id.'#add';?>" method="POST">
+      <form name="data2" action="<?php echo $filename; echo '?experiment_id='.$experiment_id.'#add';?>" method="POST">
       <input type="submit" value="Reset">
       </form>
     </td>
