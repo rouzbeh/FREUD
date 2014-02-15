@@ -60,7 +60,7 @@ if(isset($_SESSION['permission']) && $_SESSION['permission']=="admin"){
         echo "<b style='line-height: 1.8em; '>deleted: experiments<br />";
         $query = "DELETE FROM experiment";
         //echo $query;
-        $result = $mysqli->query($query) or die(mysqli_error($connectionDB)); 
+        $result = $mysqli->query($query) or die($mysqli->error); 
       }
 			
       if($_POST['request'])   { 

@@ -14,7 +14,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
 
   $rememberFormValues=0;
   $editmode=0;
-  $original_date = $_REQUEST['edate'];
+  $original_date = isset($_REQUEST['edate'])?$_REQUEST['edate']:"";
 
   // get the experiment value
   $experiment_id = intval($_REQUEST['experiment_id']);
