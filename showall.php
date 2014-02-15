@@ -15,13 +15,13 @@ include "header.php";
 
 //get currdate
 $query_date = "SELECT current_date() as currdate";
-$result_date = mysqli_query($connectionDB, $query_date) or die(mysqli_error($connectionDB));
+$result_date = $mysqli->query($query_date) or die($mysqli->error);
 $row_date = mysqli_fetch_array($result_date, MYSQLI_ASSOC);
 $currdate = $row_date['currdate'];
 
 //get currtime
 $query_time = "SELECT current_time() as currtime";
-$result_time = mysqli_query($connectionDB, $query_time) or die(mysqli_error($connectionDB));
+$result_time = $mysqli->query($query_time) or die($mysqli->error);
 $row_time = mysqli_fetch_array($result_time, MYSQLI_ASSOC);
 $currtime = $row_time['currtime'];
 
@@ -38,18 +38,36 @@ if (isset($_GET['action'])) {
 		//show all timeslots for selected experiment
 		case 1: {
 
-				$query2 = "SELECT timeslot.*, experiment.title, experiment.location, experiment.hour_credit, experiment.researcher_email FROM timeslot LEFT JOIN experiment ON timeslot.experiment_id=experiment.experiment_id WHERE timeslot.timeslot_id='" . $_GET['tid'] . "'";
-				$result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error($connectionDB));
-				$row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC);
-				//check to see if already signed up for experiment //stangles 12/14/11
-				$query0 = "SELECT sign_up_id FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.experiment_id='" . $_GET['eid'] . "' AND participant_email='" . $_SESSION['email'] . "'";
-				$result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error($connectionDB));
-				$num0 = mysqli_num_rows($result0);
+				
+                $stmt = $mysqli->prepare("SELECT timeslot.*, experiment.title, experiment.location, experiment.hour_credit, experiment.researcher_email FROM timeslot LEFT JOIN experiment ON timeslot.experiment_id=experiment.experiment_id WHERE timeslot.timeslot_id=?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('i', $_GET['tid']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $result2=$stmt->get_result();
+          $stmt->close();
+          $row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC);
+          //check to see if already signed up for experiment //stangles 12/14/11
+          $stmt = $mysqli->prepare("SELECT sign_up_id FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.experiment_id=? AND participant_email=?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('is', $_GET['eid'], $_SESSION['email']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $result0=$stmt->get_result();
+          $stmt->close();
+          $num0 = mysqli_num_rows($result0);
 				if($num0 == 0){
-					//insert information into request table
-
-					$query6 = "INSERT INTO signsup (timeslot_id,participant_email) VALUES ('" . $_GET['tid'] . "', '" . $_SESSION['email'] . "')";
-					$result6 = mysqli_query($connectionDB, $query6);
+                  //insert information into request table
+                    $stmt = $mysqli->prepare("INSERT INTO signsup (timeslot_id,participant_email) VALUES ( ?, ?)");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('is', $_GET['tid'], $_SESSION['email']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $result6=$stmt->get_result();
+          $stmt->close();
 					if ($result6) {
 						//construct an email body
 						$email = $_SESSION['email'];
@@ -94,8 +112,14 @@ if (isset($_GET['action'])) {
 			}
 		case 0: {
 				//extract title from experiment with eid
-				$query = "SELECT experiment_id, title FROM experiment WHERE experiment_id='" . $_GET['eid'] . "'";
-				$result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+				               $stmt = $mysqli->prepare("SELECT experiment_id, title FROM experiment WHERE experiment_id=?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('i', $_GET['eid']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $result=$stmt->get_result();
+          $stmt->close();
 				$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
 				echo "<br /><br /><br /><p><div align=\"left\">";
@@ -107,45 +131,65 @@ if (isset($_GET['action'])) {
 				echo "  <tr><th>Date</th><th>Time</th><th>Seats available</th><th>Actions</th><th>Status</th></tr>\n";
 
 
-				//am I already signed in any timeslot for this experiment??
-				//changed July 27 2010
-				$query0 = "SELECT sign_up_id FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.experiment_id='" . $_GET['eid'] . "' AND participant_email='" . $_SESSION['email'] . "'";
-				$result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error($connectionDB));
+				//am I already signed in any timeslot for this
+				//experiment?? changed July 27 2010
+                $stmt = $mysqli->prepare("SELECT sign_up_id FROM signsup LEFT JOIN timeslot ON
+timeslot.timeslot_id=signsup.timeslot_id WHERE
+timeslot.experiment_id=? AND participant_email=?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('is', $_GET['eid'], $_SESSION['email']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $result0=$stmt->get_result();
+          $stmt->close();
 				$num0 = mysqli_num_rows($result0);
 
 
 
 				//show all timeslots for given experiment, only future timeslots, hide expired timeslots
-				$query = "SELECT timeslot.* 
+                $stmt = $mysqli->prepare("SELECT timeslot.* 
 					FROM timeslot LEFT JOIN experiment 
 					ON timeslot.experiment_id=experiment.experiment_id 
-					WHERE timeslot.experiment_id='".$_GET['eid']."' 
-					AND (edate>'".$currdate."' 
-							OR (edate='".$currdate."' AND etime>='".$currtime."')) 
-					ORDER BY timeslot.edate ASC, timeslot.etime ASC";
-				//echo $query;
-				$result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+					WHERE timeslot.experiment_id=? 
+					AND (edate>? 
+							OR (edate=? AND etime>=?)) 
+					ORDER BY timeslot.edate ASC, timeslot.etime ASC");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('issi', $_GET['eid'], $currdate, $currdate, $currtime);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $result=$stmt->get_result();
+          $result = $result->fetch_all(MYSQLI_ASSOC);
+          $stmt->close();
 				$counter4 = 0;
-				while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-					//count how many spaces are already occupied in selected timeslot
-					$query2 = "SELECT * FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.timeslot_id='" . $row['timeslot_id'] . "'";
-					//echo $query2;
-					$result2 = mysqli_query($connectionDB, $query2) or die(mysqli_error($connectionDB));
-					$num2 = mysqli_num_rows($result2);
-					$capacity_left = ($row['capacity_total'] - $num2);
-					//echo $capacity_left;
-					//am I already signed in this timeslot??
-					$query3 = "SELECT * FROM signsup WHERE participant_email='" . $_SESSION['email'] . "' and timeslot_id='" . $row['timeslot_id'] . "'";
-					$result3 = mysqli_query($connectionDB, $query3) or die(mysqli_error($connectionDB));
-					$num3 = mysqli_num_rows($result3);
-
-
-					if (($counter4++) % 2 == 1)
-						echo "    <tr class='sudy'>\n";
-					else
-						echo "    <tr class='lichy'>\n";
-					echo "    <td>" . transformDateYearLast($row['edate']) . ", " . dayofweek($row['edate']) . "</td>\n";
-					echo "    <td>" . time24to12($row['etime']) . "</td>\n";
+                
+				foreach ($result as $row) {
+                  $stmt = $mysqli->prepare("SELECT * FROM signsup LEFT JOIN timeslot ON timeslot.timeslot_id=signsup.timeslot_id WHERE timeslot.timeslot_id=?");
+                if(!$stmt) die("Prepare failed");
+                $stmt->bind_param('i', $row['timeslot_id']);
+                  $stmt->execute();
+                  $result2 = $stmt->get_result();
+                  $stmt->close();
+                  $num2 = mysqli_num_rows($result2);
+                  $capacity_left = ($row['capacity_total'] - $num2);
+                  //echo $capacity_left;
+                  //am I already signed in this timeslot??
+                   $stmt = $mysqli->prepare("SELECT * FROM signsup WHERE participant_email=? and timeslot_id=?");
+                if(!$stmt) die("Prepare failed");
+                $stmt->bind_param('si', $_SESSION['email'], $row['timeslot_id']);
+                  $stmt->execute();
+                  $result3 = $stmt->get_result();
+                  $stmt->close();
+                   $num3 = mysqli_num_rows($result3);
+                  
+                  if (($counter4++) % 2 == 1)
+                    echo "    <tr class='sudy'>\n";
+                  else
+                    echo "    <tr class='lichy'>\n";
+                  echo "    <td>" . transformDateYearLast($row['edate']) . ", " . dayofweek($row['edate']) . "</td>\n";
+                  echo "    <td>" . time24to12($row['etime']) . "</td>\n";
 					echo "    <td>" . $capacity_left . "</td>\n";
 					echo "    <td>";
 					if ($num3 > 0) {
