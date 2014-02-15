@@ -14,7 +14,7 @@ if (isset($_GET['val']))
   if (!$stmt->execute()) {
     echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
-  $stmt->bind_result($result);
+  $result = $stmt->get_result();
   $stmt->close();
   $row = $result->fetch_assoc();
   $check=mysqli_num_rows($result);
@@ -34,7 +34,7 @@ if (isset($_GET['val']))
   if (!$stmt->execute()) {
     echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
-  $stmt->bind_result($result1);
+  $result1=$stmt->get_result();
   $stmt->close();
   $row1 = $result1->fetch_assoc();
   
@@ -44,7 +44,7 @@ if (isset($_GET['val']))
   if (!$stmt->execute()) {
     echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
-  $stmt->bind_result($result2);
+  $result2 = $stmt->get_result();
   $stmt->close();
   $num2=mysqli_num_rows($result2);
   $capacity_left=($row1['capacity_total']-$num2);

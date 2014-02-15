@@ -17,7 +17,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
   $original_date = isset($_REQUEST['edate'])?$_REQUEST['edate']:"";
 
   // get the experiment value
-  $experiment_id = intval($_REQUEST['experiment_id']);
+  $experiment_id = isset($_REQUEST['experiment_id'])?intval($_REQUEST['experiment_id']):0;
   $experiment_name = "";
 
   if (isset($_REQUEST['reset']) )

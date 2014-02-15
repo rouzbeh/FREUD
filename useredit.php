@@ -37,7 +37,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
-          $stmt->bind_result($result);
           $stmt->close();
           break;
         }
@@ -50,7 +49,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
-          $stmt->bind_result($result);
           $stmt->close();
           $messageCode=1;
           $message="Password for ".$_GET['id']." changed to '". $default_password . "'.";
@@ -65,7 +63,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
-          $stmt->bind_result($result);
           $stmt->close();
           $messageCode=2;
           $message="A user with an email address ".$_GET['id']." was removed from the database.";
@@ -85,7 +82,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
               if (!$stmt->execute()) {
                 echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
               }
-              $stmt->bind_result($result);
               $stmt->close();
         
               //delete all requests and signsups
@@ -95,7 +91,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
               if (!$stmt->execute()) {
                 echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
               }
-              $stmt->bind_result($result);
               $stmt->close();
 
               $stmt = $mysqli->prepare("DELETE FROM signsup WHERE participant_email = ?");
@@ -104,7 +99,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
               if (!$stmt->execute()) {
                 echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
               }
-              $stmt->bind_result($result);
               $stmt->close();
             }
           }
