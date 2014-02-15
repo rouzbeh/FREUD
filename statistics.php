@@ -54,13 +54,15 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     if (!($stmt = $mysqli->prepare("SELECT timeslot.timeslot_id, timeslot.edate, timeslot.etime, timeslot.experiment_id FROM signsup LEFT JOIN timeslot ON signsup.timeslot_id=timeslot.timeslot_id WHERE signsup.participant_email=? and timeslot.edate>? and timeslot.edate<?"))) {
       echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
-    $stmt->bind_param("sss", $row0['email'], $startdate, $currdate);
+    if(!$stmt->bind_param("sss", $row0['email'], $startdate, $currdate)){
+        echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
+    }
     if (!$stmt->execute()) {
       echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
-    $mysqli->bind_result($result1);
+    $result1 = $stmt->get_result();
+    $rows1 = $result1->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-
     echo "<table width=\"100%\">\n";
     echo "<tbody>\n";
     echo "<tr>\n";
@@ -71,17 +73,17 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     if (!($stmt = $mysqli->prepare("SELECT title, hour_credit, experiment_id FROM experiment WHERE experiment.experiment_id=?"))) {
       echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
-    $stmt->bind_param("i", $row1['experiment_id']);
-      
-      
-    while($row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC))
+    foreach($rows1 as $row1)
     {
+      if(!$stmt->bind_param("i", $row1['experiment_id'])){
+        echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
+      }
       echo "<tr>\n";
-      if (!$stmt->execute()) {
+      if (!$stmt2->execute()) {
         echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
       }
-      $mysqli->bind_result($result2);
-      $row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC);
+      $result2 = $stmt->get_result();
+      $row2 = $result2->fetch_assoc();
       echo "<td>".$row1['timeslot_id']."</td>\n";
       echo "<td>".transformDateYearLast($row1['edate']).", ".dayofweek($row1['edate'])."</td>\n";
       echo "<td>".time24to12($row1['etime'])."</td>\n";
@@ -94,7 +96,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     echo "</tbody>\n";
     echo "</table><br /><br />";
   }
-
   
   if ($messageCode!=0)
   {

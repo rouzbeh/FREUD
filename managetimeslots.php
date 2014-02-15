@@ -215,7 +215,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
       echo "    <td><a onclick=\"return confirm('Are you sure you want to delete this timeslot?');\" href=\"?experiment_id=$experiment_id&id=".$row['timeslot_id']."&action=0\"><img class='noborder' src='images/delete_icon.gif' alt='Remove Timeslot' title='Remove Timeslot' height='15' width='15'></a></td>\n";
       echo "  </tr>\n";
     }
-    $stmt->close();
     echo "  </tbody>\n";
     echo "</table>\n";
 

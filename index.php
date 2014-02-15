@@ -7,11 +7,12 @@ include "connectDB.php";
 
 $messageCode=0;
 $message="";
-if(($_GET['error'])=='timeout'){
-  $message = "Your session has timed out";
-  $messageCode=10;
+if(array_key_exists('timeout', $_GET)){
+  if(($_GET['error'])=='timeout'){
+    $message = "Your session has timed out";
+    $messageCode=10;
+  }
 }
-  
   
 //This code runs if the form has been submitted
 if (isset($_POST['submit'])) 

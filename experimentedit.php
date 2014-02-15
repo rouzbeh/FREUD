@@ -32,7 +32,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       if (!$stmt->execute()) {
         echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
       }
-      $stmt->bind_result($result);
       $stmt->close();
       //Print information about success of creation
       $message="Experiment created!";
@@ -72,7 +71,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
-          $stmt->bind_result($result);
           $stmt->close();
 
           //find all timeslots, which correspond to an experiment; remove dependencies between request, signsup tables
@@ -82,7 +80,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
-          $stmt->bind_result($result);
           $stmt->close();
           while($row = $result->fetch_assoc())
           {       
@@ -94,9 +91,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
             if (!$stmt->execute()) {
               echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
             }
-            $stmt->bind_result($result);
             $stmt->close();
-
           
             $stmt = $mysqli->prepare("DELETE FROM signsup WHERE timeslot_id = ?");
             if(!$stmt) die("Prepare failed");
@@ -104,7 +99,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
             if (!$stmt->execute()) {
               echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
             }
-            $stmt->bind_result($result);
             $stmt->close();
           }
           //remove corresponding timeslots from DB
@@ -114,7 +108,6 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
-          $stmt->bind_result($result);
           $stmt->close();
           break;
         }

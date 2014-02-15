@@ -145,7 +145,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   echo "    </tr>\n";
 
   $query = "SELECT * FROM user ORDER BY email ASC";
-  $result = $mysqli->query($query) or die($mysqli->error));
+  $result = $mysqli->query($query) or die($mysqli->error);
   $num = mysqli_num_rows($result)-1;
   $id=0;
   
