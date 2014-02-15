@@ -74,14 +74,11 @@ include "header.php";
     <font size="3" style="display:block; padding: 25px 10px 10px 0px;"><b>My Experiments</b></font>
     <br />
 
+<table>
+<tbody>
+<tr><th>Experiment title</th><th>Date</th><th>Time</th><th>Location</th><th>Hour/Credit</th></tr>
+
 <?php
-    echo "<table>\n";
-echo "  <tbody>\n";
-echo "  <tr><th>Experiment title</th><th>Date</th><th>Time</th><th>Location</th><th>Hour/Credit</th></tr>\n";
-
-
-$query0 = "SELECT timeslot.timeslot_id, timeslot.edate, timeslot.etime, timeslot.experiment_id FROM signsup LEFT JOIN timeslot ON signsup.timeslot_id=timeslot.timeslot_id WHERE signsup.participant_email='".$_SESSION['email']."'";
-$result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error($connectionDB));
 $stmt = $mysqli->prepare("SELECT timeslot.timeslot_id, timeslot.edate, timeslot.etime, timeslot.experiment_id FROM signsup LEFT JOIN timeslot ON signsup.timeslot_id=timeslot.timeslot_id WHERE signsup.participant_email='?'");
 /* bind parameters for markers */
 $stmt->bind_param("s", $_SESSION['email']);
