@@ -7,11 +7,6 @@
 
   $messageCode=0;
   $message="";
-//print session variables
-//  if (isset($_SESSION['email'])) echo $_SESSION['email']."<br />";
-//  if (isset($_SESSION['permission'])) echo $_SESSION['permission']."<br />";
-//  if (isset($_SESSION['timestamp'])) echo $_SESSION['timestamp']."<br />";
-
   if(($_GET['error'])=='timeout'){
         $message = "Your session has timed out";
         $messageCode=10;
@@ -21,14 +16,19 @@
   //This code runs if the form has been submitted
   if (isset($_POST['submit'])) 
   { 
-      if (!get_magic_quotes_gpc()) 
-      {
-        $_POST['email'] = addslashes($_POST['email']);
-      }
-      
       //is our username(email) in database?
       $query = "SELECT * FROM user WHERE email='".$_POST['email']."'";
       $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+
+      if (!($stmt = $mysqli->prepare("SELECT * FROM user WHERE email=?"))) {
+          echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+        }
+        $stmt->bind_param("s", $_POST['email']);
+        if (!$stmt->execute()) {
+          echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+        }
+        $result = $stmt->get_result();
+        $stmt->close();
 
       $check=mysqli_num_rows($result);
   

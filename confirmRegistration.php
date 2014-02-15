@@ -14,7 +14,7 @@ if (isset($_GET['val']))
   $stmt->execute();
   $stmt->bind_result($result);
   $check=mysqli_num_rows($result);
-  
+  $stmt->close()
   //confirmation code not found
   if ($check != 1) 
   {
@@ -30,7 +30,7 @@ if (isset($_GET['val']))
     $stmt->bind_param('s',$_GET['val']);
     $stmt->execute();
     $stmt->bind_result($result);
-
+    $stmt->close();
     $message = "You have been successfully registered.";
     $messageCode=2;
   }

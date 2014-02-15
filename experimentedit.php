@@ -19,26 +19,19 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     }
 
     if ($messageCode==0)
-    {
-      // add slashes if needed
-      if (!get_magic_quotes_gpc()) 
-      {
-        $_POST['title'] = addslashes($_POST['title']);
-        $_POST['description'] = addslashes($_POST['description']);
-        $_POST['hour_credit'] = addslashes($_POST['hour_credit']);
-        $_POST['location'] = addslashes($_POST['location']);
-        $_POST['researcher_email'] = addslashes($_POST['researcher_email']);
-		$_POST['advisor'] = addslashes($_POST['advisor']);
-      }
-  
+    { 
       if (isset($_POST['isopen']) && $_POST['isopen']=="on") $isopen=1; //read value of checkbox
       else $isopen=0;
       $iscompleted=0;
 
       //now we insert it into the database 
-      $query = "INSERT INTO experiment VALUES ('0', '".$_POST['title']."', '".$isopen."', '".$_POST['description']."', '".$_POST['hour_credit']."', '".$iscompleted."','".$_POST['location']."', '".$_POST['researcher_email']."', '".$_POST['advisor']."')";
-      $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-    
+      $stmt = $mysqli->prepare("INSERT INTO experiment VALUES ('0', ?, ?, ?, ?, ?, ?, ?, ?)");
+      if(!$stmt) die("Prepare failed");
+      $stmt->bind_param('sississs', $_POST['title'], $isopen, $_POST['description'], $_POST['hour_credit'], $iscompleted, $_POST['location'], $_POST['researcher_email'], $_POST['advisor']);
+
+      $stmt->execute();
+      $stmt->bind_result($result);
+      $stmt->close();
       //Print information about success of creation
       $message="Experiment created!";
       $messageCode=2;
@@ -71,27 +64,46 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       case 2:
       {
         //remove experiment from DB
-        $query = "DELETE FROM experiment WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+        $stmt = $mysqli->prepare("DELETE FROM experiment WHERE experiment_id = ?");
+      if(!$stmt) die("Prepare failed");
+      $stmt->bind_param('i', $_GET['id']);
+      $stmt->execute();
+      $stmt->bind_result($result);
+      $stmt->close();
 
         //find all timeslots, which correspond to an experiment; remove dependencies between request, signsup tables
-        $query = "SELECT timeslot_id FROM timeslot WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+        $stmt = $mysqli->prepare("SELECT timeslot_id FROM timeslot WHERE experiment_id = ?");
+      if(!$stmt) die("Prepare failed");
+      $stmt->bind_param('i', $_GET['id']);
+      $stmt->execute();
+      $stmt->bind_result($result);
+      $stmt->close();
+      while($row = $result->fetch_assoc())
         {       
           $timeslotid=$row['timeslot_id'];
 
-          $query0 = "DELETE FROM request WHERE timeslot_id = '".$timeslotid."'";
-          $result0 = mysqli_query($connectionDB, $query0) or die(mysqli_error($connectionDB));
+           $stmt = $mysqli->prepare("DELETE FROM request WHERE timeslot_id = ?");
+      if(!$stmt) die("Prepare failed");
+      $stmt->bind_param('i', $timeslotid);
+      $stmt->execute();
+      $stmt->bind_result($result);
+      $stmt->close();
 
-          $query1 = "DELETE FROM signsup WHERE timeslot_id = '".$timeslotid."'";
-          $result1 = mysqli_query($connectionDB, $query1) or die(mysqli_error($connectionDB));
+          
+          $stmt = $mysqli->prepare("DELETE FROM signsup WHERE timeslot_id = ?");
+      if(!$stmt) die("Prepare failed");
+      $stmt->bind_param('i', $timeslotid);
+      $stmt->execute();
+      $stmt->bind_result($result);
+      $stmt->close();
         }
-
         //remove corresponding timeslots from DB
-        $query = "DELETE FROM timeslot WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-
+         $stmt = $mysqli->prepare("DELETE FROM timeslot WHERE experiment_id = ?");
+      if(!$stmt) die("Prepare failed");
+      $stmt->bind_param('i', $_GET['id']);
+      $stmt->execute();
+      $stmt->bind_result($result);
+      $stmt->close();
         break;
       }
     }
@@ -109,7 +121,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   echo "    </tr>\n";
 
   $query = "SELECT * FROM experiment ORDER BY experiment_id ASC";
-  $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+  $result = $mysqli->query($query) or die($mysqli->error);
 
   $counter6 = 0;
   if(mysqli_num_rows($result)==0) echo "<tr><td colspan='5'>No available experiments</td></tr>";
@@ -190,7 +202,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       <select name="researcher_email">
 <?php
         $query = "SELECT email FROM user WHERE role='researcher' OR role='admin' ORDER BY user.email ASC";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+        $result = $mysqli->query($query) or die($mysqli->error);
 
         while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
         {
