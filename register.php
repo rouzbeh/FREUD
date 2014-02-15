@@ -147,7 +147,7 @@ fnjsdklfhjs
           <td>Class year:</td>
           <td>
             <select name="classyear">
-<?
+<?php
               $datenow=date("Y");
               for ($ii=0; $ii<5; $ii++)
               {
