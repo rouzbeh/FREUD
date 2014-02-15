@@ -59,7 +59,9 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
         if (!($stmt = $mysqli->prepare("INSERT INTO timeslot VALUES ('0', ?, ?, ?, '0', ?)"))) {
           echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
         }
-        $stmt->bind_param("issi", $_POST['experiment_id'], $_POST['edate'], $etime1, $_POST[$capacity]);
+        if(!($stmt->bind_param("issi", $_REQUEST['experiment_id'], $_REQUEST['edate'], $etime1, $_REQUEST[$capacity]))){
+          echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+        }
         if (!$stmt->execute()) {
           echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
         }
@@ -300,7 +302,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
     </form>
     </td>
     <td>
-    <form name="data2" action=<?php echo '"'.$filename; echo '?experiment_id='.$experiment_id.'#add@';?> method="POST">
+    <form name="data2" action=<?php echo '"'.$filename; echo '?experiment_id='.$experiment_id.'#add@"';?> method="POST">
     <input type="submit" value="Reset">
     </form>
     </td>

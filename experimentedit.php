@@ -1,9 +1,9 @@
 <?php
-  $filename="experimentedit.php";
+$filename="experimentedit.php";
 
-  include "loginCheck.php";
+include "loginCheck.php";
   
-  include "connectDB.php";
+include "connectDB.php";
 if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   $messageCode=0;
   $message="";
@@ -28,8 +28,10 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       $stmt = $mysqli->prepare("INSERT INTO experiment VALUES ('0', ?, ?, ?, ?, ?, ?, ?, ?)");
       if(!$stmt) die("Prepare failed");
       $stmt->bind_param('sississs', $_POST['title'], $isopen, $_POST['description'], $_POST['hour_credit'], $iscompleted, $_POST['location'], $_POST['researcher_email'], $_POST['advisor']);
-
-      $stmt->execute();
+      
+      if (!$stmt->execute()) {
+        echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+      }
       $stmt->bind_result($result);
       $stmt->close();
       //Print information about success of creation
@@ -43,69 +45,79 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   if (isset($_GET['action']))
     switch($_GET['action'])
     {
-/*      case 1:
-      {
-        //save changes mode
-        if (!get_magic_quotes_gpc()) 
-        {
-          $_POST['title'] = addslashes($_POST['title']);
-          $_POST['hour_credit'] = addslashes($_POST['hour_credit']);
-          $_POST['location'] = addslashes($_POST['location']);
-          $_POST['description'] = addslashes($_POST['description']);
-        }
-        if (isset($_POST['isopen']) && $_POST['isopen']=="on") $xisopen=1; else {$xisopen=0;} //processing of checkbox
-        if (isset($_POST['iscompleted']) && $_POST['iscompleted']=="on") $xiscompleted=1; else {$xiscompleted=0;} //processing of checkbox
+      /*      case 1:
+              {
+              //save changes mode
+              if (!get_magic_quotes_gpc()) 
+              {
+              $_POST['title'] = addslashes($_POST['title']);
+              $_POST['hour_credit'] = addslashes($_POST['hour_credit']);
+              $_POST['location'] = addslashes($_POST['location']);
+              $_POST['description'] = addslashes($_POST['description']);
+              }
+              if (isset($_POST['isopen']) && $_POST['isopen']=="on") $xisopen=1; else {$xisopen=0;} //processing of checkbox
+              if (isset($_POST['iscompleted']) && $_POST['iscompleted']=="on") $xiscompleted=1; else {$xiscompleted=0;} //processing of checkbox
 
-        $query = "UPDATE experiment SET title = '".$_POST['title']."', is_open='".$xisopen."', description = '".$_POST['description']."', hour_credit = '".$_POST['hour_credit']."', exp_completed='".$xiscompleted."', location='".$_POST['location']."', researcher_email='".$_POST['researcher_email']."'  WHERE experiment_id = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-        break;
-      }
-*/
+              $query = "UPDATE experiment SET title = '".$_POST['title']."', is_open='".$xisopen."', description = '".$_POST['description']."', hour_credit = '".$_POST['hour_credit']."', exp_completed='".$xiscompleted."', location='".$_POST['location']."', researcher_email='".$_POST['researcher_email']."'  WHERE experiment_id = '".$_GET['id']."'";
+              $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+              break;
+              }
+      */
       case 2:
-      {
-        //remove experiment from DB
-        $stmt = $mysqli->prepare("DELETE FROM experiment WHERE experiment_id = ?");
-      if(!$stmt) die("Prepare failed");
-      $stmt->bind_param('i', $_GET['id']);
-      $stmt->execute();
-      $stmt->bind_result($result);
-      $stmt->close();
+        {
+          //remove experiment from DB
+          $stmt = $mysqli->prepare("DELETE FROM experiment WHERE experiment_id = ?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('i', $_GET['id']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $stmt->bind_result($result);
+          $stmt->close();
 
-        //find all timeslots, which correspond to an experiment; remove dependencies between request, signsup tables
-        $stmt = $mysqli->prepare("SELECT timeslot_id FROM timeslot WHERE experiment_id = ?");
-      if(!$stmt) die("Prepare failed");
-      $stmt->bind_param('i', $_GET['id']);
-      $stmt->execute();
-      $stmt->bind_result($result);
-      $stmt->close();
-      while($row = $result->fetch_assoc())
-        {       
-          $timeslotid=$row['timeslot_id'];
+          //find all timeslots, which correspond to an experiment; remove dependencies between request, signsup tables
+          $stmt = $mysqli->prepare("SELECT timeslot_id FROM timeslot WHERE experiment_id = ?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('i', $_GET['id']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $stmt->bind_result($result);
+          $stmt->close();
+          while($row = $result->fetch_assoc())
+          {       
+            $timeslotid=$row['timeslot_id'];
 
-           $stmt = $mysqli->prepare("DELETE FROM request WHERE timeslot_id = ?");
-      if(!$stmt) die("Prepare failed");
-      $stmt->bind_param('i', $timeslotid);
-      $stmt->execute();
-      $stmt->bind_result($result);
-      $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM request WHERE timeslot_id = ?");
+            if(!$stmt) die("Prepare failed");
+            $stmt->bind_param('i', $timeslotid);
+            if (!$stmt->execute()) {
+              echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            }
+            $stmt->bind_result($result);
+            $stmt->close();
 
           
-          $stmt = $mysqli->prepare("DELETE FROM signsup WHERE timeslot_id = ?");
-      if(!$stmt) die("Prepare failed");
-      $stmt->bind_param('i', $timeslotid);
-      $stmt->execute();
-      $stmt->bind_result($result);
-      $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM signsup WHERE timeslot_id = ?");
+            if(!$stmt) die("Prepare failed");
+            $stmt->bind_param('i', $timeslotid);
+            if (!$stmt->execute()) {
+              echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            }
+            $stmt->bind_result($result);
+            $stmt->close();
+          }
+          //remove corresponding timeslots from DB
+          $stmt = $mysqli->prepare("DELETE FROM timeslot WHERE experiment_id = ?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('i', $_GET['id']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $stmt->bind_result($result);
+          $stmt->close();
+          break;
         }
-        //remove corresponding timeslots from DB
-         $stmt = $mysqli->prepare("DELETE FROM timeslot WHERE experiment_id = ?");
-      if(!$stmt) die("Prepare failed");
-      $stmt->bind_param('i', $_GET['id']);
-      $stmt->execute();
-      $stmt->bind_result($result);
-      $stmt->close();
-        break;
-      }
     }
 
   include "header.php"; 
@@ -140,14 +152,14 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     }
     echo "</td>\n";
     echo "      <td>".$row['hour_credit']."</td>\n";
-   /* echo "      <td>";
-    if ($row['exp_completed']==1)
-    {
-      echo "YES";
-    }else{
-      echo "NO";
-    }
-    echo "</td>\n";*/
+    /* echo "      <td>";
+       if ($row['exp_completed']==1)
+       {
+       echo "YES";
+       }else{
+       echo "NO";
+       }
+       echo "</td>\n";*/
     echo "      <td>".$row['location']."</td>\n";
     echo "      <td>".$row['researcher_email']."</td>\n";
 	echo "      <td>".$row['advisor']."</td>\n";
@@ -160,7 +172,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   
   echo "  </tbody>\n";
   echo "</table>\n";
-//  echo "</form>\n";
+  //  echo "</form>\n";
 
   echo "<br /><br /><br /><p><div align=\"left\">";
   echo "<font size=\"3\"><b>Create a new experiment</b></font>";
@@ -168,65 +180,65 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 
 ?>
 
-<!-- Form with text fields etc. -->
-<form action="experimentedit.php" method="post">
-<table style='width:auto'>
+  <!-- Form with text fields etc. -->
+       <form action="experimentedit.php" method="post">
+  <table style='width:auto'>
   <tr><th colspan='2'>New Experiment</th></tr>
   <tr>    
-    <td>Title:</td><td>
-      <input type="text" class='textInput' name="title" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['title'];} ?>">
-    </td>
+  <td>Title:</td><td>
+  <input type="text" class='textInput' name="title" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['title'];} ?>">
+  </td>
   </tr>
   <tr>
-    <td>Description:</td><td>
-      <textarea name="description" class='textInput'  rows="15" cols="50"><?php if ($messageCode!=0){echo $_POST['description'];} ?></textarea>
-    </td>
+  <td>Description:</td><td>
+  <textarea name="description" class='textInput'  rows="15" cols="50"><?php if ($messageCode!=0){echo $_POST['description'];} ?></textarea>
+  </td>
   </tr>
   <tr>
-    <td>Hour/credit:</td><td>
-      <input type="text" class='textInput'  name="hour_credit" maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['hour_credit'];} ?>">
-    </td>
+  <td>Hour/credit:</td><td>
+  <input type="text" class='textInput'  name="hour_credit" maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['hour_credit'];} ?>">
+  </td>
   </tr>
   <tr>
-    <td>Location:</td><td>
-      <input type="text" class='textInput'  name="location" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['location'];} ?>">
-    </td>
+  <td>Location:</td><td>
+  <input type="text" class='textInput'  name="location" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['location'];} ?>">
+  </td>
   </tr>
   <tr>
-    <td>Open to sign up?</td><td>    
-      <input type="checkbox" class='textInput'  name="isopen" <?php if (!isset($_POST['submit']) || (isset($_POST['isopen']) && $_POST['isopen']=="on")) echo "checked"; ?>>
-    </td>
+  <td>Open to sign up?</td><td>    
+  <input type="checkbox" class='textInput'  name="isopen" <?php if (!isset($_POST['submit']) || (isset($_POST['isopen']) && $_POST['isopen']=="on")) echo "checked"; ?>>
+  </td>
   </tr>
   <tr>
-    <td>Researcher:</td><td>
-      <select name="researcher_email">
+  <td>Researcher:</td><td>
+  <select name="researcher_email">
 <?php
-        $query = "SELECT email FROM user WHERE role='researcher' OR role='admin' ORDER BY user.email ASC";
-        $result = $mysqli->query($query) or die($mysqli->error);
+  $query = "SELECT email FROM user WHERE role='researcher' OR role='admin' ORDER BY user.email ASC";
+  $result = $mysqli->query($query) or die($mysqli->error);
 
-        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-        {
-          echo "        <option";
-          if ($messageCode!=0){ if (isset($_POST['researcher_email']) && (strcasecmp($_POST['researcher_email'], $row['email']) == 0)) echo " selected=\"yes\"";}
-          echo ">".$row['email']."</option>\n";
-        }
+  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+  {
+    echo "        <option";
+    if ($messageCode!=0){ if (isset($_POST['researcher_email']) && (strcasecmp($_POST['researcher_email'], $row['email']) == 0)) echo " selected=\"yes\"";}
+    echo ">".$row['email']."</option>\n";
+  }
 ?>
-      </select>
-    </td>
-  </tr>
-    <tr>
-    <td>Advisor:</td><td>    
-      <input type="text" class='textInput'  name="advisor" maxlength="3" value="<?php if ($messageCode!=0){echo $_POST['advisor'];} ?>">
-    </td>
+  </select>
+  </td>
   </tr>
   <tr>
-    <td colspan=2>
-      <input type="submit" name="submit" value="Create">
-      <input type="reset" name="reset" value="Reset">
-    </td>
+  <td>Advisor:</td><td>    
+  <input type="text" class='textInput'  name="advisor" maxlength="3" value="<?php if ($messageCode!=0){echo $_POST['advisor'];} ?>">
+  </td>
+  </tr>
+  <tr>
+  <td colspan=2>
+  <input type="submit" name="submit" value="Create">
+  <input type="reset" name="reset" value="Reset">
+  </td>
   </tr> 
-</table>
-</form>
+  </table>
+  </form>
 
 <?php 
   if ($messageCode!=0)
@@ -234,8 +246,8 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     echo "<div class='generalErr'><b>$message</b></div>\n";
   }
   include "footer.php";
-  	} else {
-		echo "You are not authorized to access this page.";
-	}
+} else {
+  echo "You are not authorized to access this page.";
+}
 include "disconnectDB.php";
 ?>

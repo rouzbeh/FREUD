@@ -24,17 +24,16 @@
     //if all information entered, no empty fields
     if ($messageCode==0)
     {
-      // checks if the username is in use
-      if (!get_magic_quotes_gpc()) 
-      {
-        $_POST['email'] = addslashes($_POST['email']);
-      }
-      $emailcheck = $_POST['email'];
-      $check = mysqli_query("SELECT email FROM user WHERE email = '$emailcheck'") ;//or die(mysqli_error($connectionDB));
-echo $check;?>
-fnjsdklfhjs
-<?php
-      $check2 = mysqli_num_rows($check);
+      
+      $stmt = $mysqli->prepare("SELECT email FROM user WHERE email=?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('i', $_POST['email']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $stmt->bind_result($result);
+          $stmt->close();
+      $check2 = mysqli_num_rows($result);
 
       //if the name exists it gives an error
       if ($check2 != 0) 
@@ -59,23 +58,20 @@ fnjsdklfhjs
     {
       // here we encrypt the password and add slashes if needed
       $_POST['passw1'] = md5($_POST['passw1']);
-      if (!get_magic_quotes_gpc()) 
-      {
-        $_POST['passw1'] = addslashes($_POST['passw1']);
-        $_POST['email'] = addslashes($_POST['email']);
-        $_POST['name'] = addslashes($_POST['name']);
-        $_POST['surname'] = addslashes($_POST['surname']);
-      }
-  
       if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") $receive=1;
       else $receive=0;
       
       $validUser=substr(md5($_POST['email'].time()),0, 19);
       
       //now we insert it into the database 
-      $query = "INSERT INTO user VALUES ('".$_POST['email']."', '".$_POST['name']."', '".$_POST['surname']."', '".$_POST['passw1']."', 'participant','".$receive."', '".$validUser."', '".$_POST['classyear']."' )";
-      $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-    
+      if (!($stmt = $mysqli->prepare("INSERT INTO user VALUES (?, ?, ?, ?, 'participant', ?, ?, ?)"))) {
+        echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+      }
+      $stmt->bind_param("ssssiii", $_POST['email'], $_POST['name'], $_POST['surname'], $_POST['passw1'], $receive, $validUser, $_POST['classyear']);
+      if (!$stmt->execute()) {
+        echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+      }
+      $stmt->close();
 
       //Now we let them know if their registration was successful
       $message="You are now registered!  Welcome to FREUD.";

@@ -1,9 +1,9 @@
 <?php
-  $filename="useredit.php";
+$filename="useredit.php";
 
-  include "loginCheck.php";
+include "loginCheck.php";
   
-  include "connectDB.php";
+include "connectDB.php";
 if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 
   $messageCode=0;
@@ -22,71 +22,95 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     switch($_GET['action'])
     {
       case 0:
-      {
-        //edit mode
-        $editmode=1;
-        break;
-      }
+        {
+          //edit mode
+          $editmode=1;
+          break;
+        }
       case 1:
-      {
-        //save changes mode
-        if (!get_magic_quotes_gpc()) 
         {
-          $_POST['password'] = addslashes($_POST['password']);
-          $_POST['name'] = addslashes($_POST['name']);
-          $_POST['surname'] = addslashes($_POST['surname']);
-        }
-        if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") $xreceiveMail=1; else {$xreceiveMail=0;} //processing of checkbox
+          if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") $xreceiveMail=1; else {$xreceiveMail=0;} //processing of checkbox
 
-        $query = "UPDATE user SET name = '".$_POST['name']."', surname = '".$_POST['surname']."',  role='".$_POST['role']."', receiveMail='".$xreceiveMail."', classyear='".$_POST['classyear']."' WHERE email = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-        break;
-      }
-      case 2:
-      {
-        //reset password to default
-        $query = "UPDATE user SET password = '" . $default_password . "' WHERE email = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-
-        $messageCode=1;
-        $message="Password for ".$_GET['id']." changed '" . $the_default_password . "'";
-
-        break;
-      }
-      case 3:
-      {
-        //remove user from DB
-        $query = "DELETE FROM user WHERE email = '".$_GET['id']."'";
-        $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-
-        $messageCode=2;
-        $message="A user with an email address ".$_GET['id']." was removed from the database.";
-
-        break;
-      }
-      case 4:
-      {
-        for($ii=0; $ii<$_POST['usersTotal']; $ii++)
-        {
-          $checkboxname="checkbox".$ii;
-          if (isset($_POST[$checkboxname]) && $_POST[$checkboxname]=="on")
-          {
-            //delete user info
-            $query = "DELETE FROM user WHERE email = '".$_POST["h".$checkboxname]."'";
-            $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-
-            //delete all requests and signsups
-            $query = "DELETE FROM request WHERE participant_email = '".$_POST["h".$checkboxname]."'";
-            $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-
-            $query = "DELETE FROM signsup WHERE participant_email = '".$_POST["h".$checkboxname]."'";
-            $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
-
+          $stmt = $mysqli->prepare("UPDATE user SET name = ?, surname = ?, role=?, receiveMail=?, classyear=? WHERE email = ?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('sssiis', $_POST['name'], $_POST['surname'], $_POST['role'], $xreceiveMail, $_POST['classyear'], $_GET['id']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
+          $stmt->bind_result($result);
+          $stmt->close();
+          break;
         }
+      case 2:
+        {
+          //reset password to default
+          $stmt = $mysqli->prepare("UPDATE user SET password = ? WHERE email = ?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('ss', $default_password, $_GET['id']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $stmt->bind_result($result);
+          $stmt->close();
+          $messageCode=1;
+          $message="Password for ".$_GET['id']." changed to '". $default_password . "'.";
+          break;
+        }
+      case 3:
+        {
+          //remove user from DB
+          $stmt = $mysqli->prepare("DELETE FROM user WHERE email = ?");
+          if(!$stmt) die("Prepare failed");
+          $stmt->bind_param('s', $_GET['id']);
+          if (!$stmt->execute()) {
+            echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+          }
+          $stmt->bind_result($result);
+          $stmt->close();
+          $messageCode=2;
+          $message="A user with an email address ".$_GET['id']." was removed from the database.";
+          break;
+        }
+      case 4:
+        {
+          for($ii=0; $ii<$_POST['usersTotal']; $ii++)
+          {
+            $checkboxname="checkbox".$ii;
+            if (isset($_POST[$checkboxname]) && $_POST[$checkboxname]=="on")
+            {
+              //delete user info
+              $stmt = $mysqli->prepare("DELETE FROM user WHERE email = ?");
+              if(!$stmt) die("Prepare failed");
+              $stmt->bind_param('s', $_POST["h".$checkboxname]);
+              if (!$stmt->execute()) {
+                echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+              }
+              $stmt->bind_result($result);
+              $stmt->close();
+        
+              //delete all requests and signsups
+              $stmt = $mysqli->prepare("DELETE FROM request WHERE participant_email = ?");
+              if(!$stmt) die("Prepare failed");
+              $stmt->bind_param('s', $_POST["h".$checkboxname]);
+              if (!$stmt->execute()) {
+                echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+              }
+              $stmt->bind_result($result);
+              $stmt->close();
+
+              $stmt = $mysqli->prepare("DELETE FROM signsup WHERE participant_email = ?");
+              if(!$stmt) die("Prepare failed");
+              $stmt->bind_param('s', $_POST["h".$checkboxname]);
+              if (!$stmt->execute()) {
+                echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+              }
+              $stmt->bind_result($result);
+              $stmt->close();
+            }
+          }
       
-        break;
-      }
+          break;
+        }
     }
   }
 
@@ -121,7 +145,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   echo "    </tr>\n";
 
   $query = "SELECT * FROM user ORDER BY email ASC";
-  $result = mysqli_query($connectionDB, $query) or die(mysqli_error($connectionDB));
+  $result = $mysqli->query($query) or die($mysqli->error));
   $num = mysqli_num_rows($result)-1;
   $id=0;
   
@@ -143,10 +167,10 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       $datenow=date("Y");
       for ($ii=0; $ii<4; $ii++)
       {
-          $datenow1=$datenow+$ii;
-          echo "          <option value=\"".$datenow1."\" ";
-          if ($messageCode!=0){ if (isset($_POST['classyear']) && strcasecmp($_POST['classyear'], $datenow1)==0) echo "selected";}
-          echo ">".$datenow1."</option>\n";
+        $datenow1=$datenow+$ii;
+        echo "          <option value=\"".$datenow1."\" ";
+        if ($messageCode!=0){ if (isset($_POST['classyear']) && strcasecmp($_POST['classyear'], $datenow1)==0) echo "selected";}
+        echo ">".$datenow1."</option>\n";
       }
       echo "        </select>\n";
       echo "      </td>\n";
@@ -156,32 +180,32 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       switch ($row['role'])
       {
         case "participant":
-        {
+          {
             echo "        <select name=\"role\">\n";
             echo "          <option selected=\"yes\">participant</option>\n";
             echo "          <option>researcher</option>\n";
             echo "          <option>admin</option>\n";
             echo "        </select>\n";
-          break;
-        }
+            break;
+          }
         case "researcher":
-        {
+          {
             echo "        <select name=\"role\">\n";
             echo "          <option>participant</option>\n";
             echo "          <option selected=\"yes\">researcher</option>\n";
             echo "          <option>admin</option>\n";
             echo "        </select>\n";
-          break;
-        }
+            break;
+          }
         case "admin":
-        {
+          {
             echo "        <select name=\"role\">\n";
             echo "          <option>participant</option>\n";
             echo "          <option>researcher</option>\n";
             echo "          <option selected=\"yes\">admin</option>\n";
             echo "        </select>\n";
-          break;
-        }
+            break;
+          }
       }
       echo "     </td>\n";
       echo"     <td><input type=\"checkbox\" name=\"receiveMail\"";
@@ -243,9 +267,9 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     echo "<div class='generalErr'><b>$message</b></div>\n";
   }
   include "footer.php";
-      	} else {
-		echo "You are not authorized to access this page.";
-	}
+} else {
+  echo "You are not authorized to access this page.";
+}
 include "disconnectDB.php";
 
 ?>
