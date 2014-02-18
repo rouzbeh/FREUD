@@ -79,7 +79,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
         echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
       }
       echo "<tr>\n";
-      if (!$stmt2->execute()) {
+      if (!$stmt->execute()) {
         echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
       }
       $result2 = $stmt->get_result();
