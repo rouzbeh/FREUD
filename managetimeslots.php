@@ -139,13 +139,11 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
 
 ?>
   <form name="experiment" action=<?php echo $filename?> method="get">
-  <table style='width:auto'>
-  <tr>
-  <th colspan='2'>Select Experiment:</th></tr><tr><td>
+  <label>Select Experiment:</label>
   <select name="experiment_id">
 <?php
   //find all experiments
-  $query = "SELECT experiment_id, title FROM user INNER JOIN experiment ON user.email=experiment.researcher_email ORDER BY `experiment`.`title` ASC";
+  $query = "SELECT experiment_id, title FROM experiment ORDER BY experiment.title ASC";
   $result = $mysqli->query($query) or die($mysqli->error);
     
   while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
@@ -159,12 +157,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
   }
 ?>
   </select>
-  </td>
-  <td><input type="submit" value ="Select"></td>
-  </tr>
-    
-
-  </table>
+  <input type="submit" value ="Select" />
   </form>
 <?php
 
@@ -277,37 +270,22 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
 ?>
     <!-- Form with text fields etc. -->
     <form name="data" action=<?php echo '"'.$filename; echo '?experiment_id='.$experiment_id.'#add"';?> method="post">
-    <table style="width:auto">  
-    <tr><th colspan='5'>New Timeslot</th></tr>
-    <tr>
-    <td>Date:<br><small>(mm/dd/yyyy)</small></td><td>    
+    <label>Date:<small>(mm/dd/yyyy)</small></label>
     <input type="text" class='textInput' name="edate" maxlength="10" value=<?php if ($rememberFormValues!=0 && isset($_REQUEST['edate'])){echo $original_date;} ?>>
-    </td>
-    <td>
+    
     <a style='text-decoration:underline; cursor:hand;' onClick="newWindow()">Show calendar</a>
-    </td>
-    </tr>
-
 <?php
     for ($ii=1; $ii<=$iimax; $ii++)
     {
       printTimeslot($ii, $iimax);
     }
-?>
-
-    <tr>
-    <td colspan='2'>
-    <input type="submit" name="submit" value="Create the above slots">
+?> 
+    <input type="submit" name="submit" style="width:auto" value="Create the above slots">
     </form>
-    </td>
-    <td>
+    <!--
     <form name="data2" action=<?php echo '"'.$filename; echo '?experiment_id='.$experiment_id.'#add@"';?> method="POST">
     <input type="submit" value="Reset">
-    </form>
-    </td>
-    </tr> 
-    </table>
-    </form>
+    </form>-->
 
 <?php 
 

@@ -103,7 +103,6 @@ if(isset($_SESSION['permission']) && $_SESSION['permission']=="admin"){
       echo "</b><br /><br />All done, return to <a href='index1.php'>Main page</a><br /><br />";        
 
     }    
-		  
   } else {
     $_REQUEST['action'] = 1;
     echo "<div class='goBackTop'>&lt; <a href='index1.php'>Back</a></div>";  
@@ -111,42 +110,18 @@ if(isset($_SESSION['permission']) && $_SESSION['permission']=="admin"){
 ?>
     <br>
     <form action="db_clean.php?action=<?php echo $_REQUEST['action'];?>" method="post">   
-    <table style='width:auto'>
-    <tr>
-    <th>Table Name</th>
-    <th>Clean</th>
-    </tr>
-    <tr>
-    <td>experiments:</td><td>
+    <label>Experiments:</label>
     <input type="checkbox" name="experiment" checked="checked">
-    </td>
-    </tr>
-    <tr>
-    <td>requests:</td><td>
+    <label>Requests:</label>
     <input type="checkbox" name="request" checked="checked">
-    </td>
-    </tr>
-    <tr>
-    <td>signsups:</td><td>
+    <label>Signsups:</label>
     <input type="checkbox" name="signsup" checked="checked">
-    </td>
-    </tr>
-    <tr>
-    <td>timeslots:</td><td>
+    <label>Timeslots:</label>
     <input type="checkbox" name="timeslot" checked="checked">
-    </td>
-    </tr>
-    <tr>
-    <td>users (not admins)</td><td>
+    <label>Users (not admins):</label>
     <input type="checkbox" name="user" >
-    </td>
-    </tr>  
-    <tr>
-    <td>graduated users</td><td>
+    <label>Graduated users</label>
     <input type="checkbox" name="grad" >
-    </td>
-    </tr>  
-    </table>
     <br /><input type="submit" value="Delete" style="margin-left:130px">
     </form>
 <?php

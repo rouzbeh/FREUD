@@ -175,35 +175,18 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 
   <!-- Form with text fields etc. -->
        <form action="experimentedit.php" method="post">
-  <table style='width:auto'>
-  <tr><th colspan='2'>New Experiment</th></tr>
-  <tr>    
-  <td>Title:</td><td>
-  <input type="text" class='textInput' name="title" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['title'];} ?>">
-  </td>
-  </tr>
-  <tr>
-  <td>Description:</td><td>
-  <textarea name="description" class='textInput'  rows="15" cols="50"><?php if ($messageCode!=0){echo $_POST['description'];} ?></textarea>
-  </td>
-  </tr>
-  <tr>
-  <td>Hour/credit:</td><td>
-  <input type="text" class='textInput'  name="hour_credit" maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['hour_credit'];} ?>">
-  </td>
-  </tr>
-  <tr>
-  <td>Location:</td><td>
-  <input type="text" class='textInput'  name="location" maxlength="50" value="<?php if ($messageCode!=0){echo $_POST['location'];} ?>">
-  </td>
-  </tr>
-  <tr>
-  <td>Open to sign up?</td><td>    
-  <input type="checkbox" class='textInput'  name="isopen" <?php if (!isset($_POST['submit']) || (isset($_POST['isopen']) && $_POST['isopen']=="on")) echo "checked"; ?>>
-  </td>
-  </tr>
-  <tr>
-  <td>Researcher:</td><td>
+      
+  <label>Title:</label>
+  <input type="text" class="textInput" name="title" value="<?php if ($messageCode!=0){echo $_POST['title'];} ?>">
+  <label>Description:</label>
+  <textarea name="description" class="textInput"><?php if ($messageCode!=0){echo $_POST['description'];} ?></textarea>
+  <label>Hour/credit:</label>
+  <input type="text" class="textInput" name="hour_credit" maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['hour_credit'];} ?>">
+  <label>Location:</label>
+  <input type="text" class="textInput" name="location" value="<?php if ($messageCode!=0){echo $_POST['location'];} ?>">
+  <label>Open to sign up?</label>
+  <input type="checkbox" name="isopen" checked="<?php if (!isset($_POST['submit']) || (isset($_POST['isopen']) && $_POST['isopen']=="on")) echo "true"; else echo "false" ?>" />
+  <label>Researcher:</label>
   <select name="researcher_email">
 <?php
   $query = "SELECT email FROM user WHERE role='researcher' OR role='admin' ORDER BY user.email ASC";
@@ -217,20 +200,10 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   }
 ?>
   </select>
-  </td>
-  </tr>
-  <tr>
-  <td>Advisor:</td><td>    
-  <input type="text" class='textInput'  name="advisor" maxlength="3" value="<?php if ($messageCode!=0){echo $_POST['advisor'];} ?>">
-  </td>
-  </tr>
-  <tr>
-  <td colspan=2>
+  <label for="advisor">Advisor:</label>    
+  <input type="text" class="textInput" id="advisor" name="advisor" maxlength="3" value="<?php if ($messageCode!=0){echo $_POST['advisor'];} ?>">
   <input type="submit" name="submit" value="Create">
   <input type="reset" name="reset" value="Reset">
-  </td>
-  </tr> 
-  </table>
   </form>
 
 <?php 

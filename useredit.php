@@ -110,7 +110,11 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
 
 
   include "header.php";
-  echo "<div class='goBackTop'>&lt; <a href='index1.php'>Back</a></div>";   
+  echo "<div class='goBackTop'>&lt; <a href='index1.php'>Back</a></div>";
+  if ($messageCode!=0)
+  {
+    echo "<div class='generalErr'><b>$message</b></div>\n";
+  }
   echo "<font size='3' style='display:block; padding: 25px 10px 10px 0px;'><b>Manage user accounts</b></font>";
   
 
@@ -249,17 +253,11 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   }
   
   echo "    </tr>\n";
-  echo "    <tr>\n";
-  echo "      <td colspan=\"12\" align=\"center\"><input type=\"hidden\" name=\"usersTotal\" value=\"".$num."\"><input type=\"submit\" name=\"deleteselected\" value=\"Delete selected\"></td>\n";
-  echo "    </tr>\n";  
   echo "  </tbody>\n";
   echo "</table>\n";
+  echo "<input type=\"hidden\" name=\"usersTotal\" value=\"".$num."\">\n";
+  echo "<input type=\"submit\" name=\"deleteselected\" style=\"bottom:-35px\"  value=\"Delete selected\">\n";
   echo "</form>\n";
-
-  if ($messageCode!=0)
-  {
-    echo "<div class='generalErr'><b>$message</b></div>\n";
-  }
   include "footer.php";
 } else {
   echo "You are not authorized to access this page.";

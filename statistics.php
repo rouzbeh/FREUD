@@ -14,20 +14,9 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   
 ?>    <!-- Form with text fields etc. -->
   <br /><form action="" method="post" name="data">
-  <table border="0">
-  <tr>
-  <th colspan='3'>Date Filter</th>
-  </tr>
-  <tr>  
-  <td>
-  Show Information no older than
-      </td>
-  <td>
-  <input type="text" name="edate" maxlength="10" value="<?php if (isset($_POST['edate'])){echo $_POST['edate'];} ?>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' onClick="newWindow()">Show calendar</a>
-  </td>       
-  <td><input type="submit" name="submit" value="Apply filter"></td>
-  <tr>
-  </table>
+  <label style="width:auto">Show Information no older than</label>
+  <input type="text" name="edate" maxlength="10" value="<?php if (isset($_POST['edate'])){echo $_POST['edate'];} ?>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' onClick="newWindow()">Show calendar</a> 
+  <input type="submit" name="submit" value="Apply filter">
   </form><br /><br />
 <?php
   
@@ -55,7 +44,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
       echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
     if(!$stmt->bind_param("sss", $row0['email'], $startdate, $currdate)){
-        echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
+      echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
     if (!$stmt->execute()) {
       echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
@@ -63,38 +52,40 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     $result1 = $stmt->get_result();
     $rows1 = $result1->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    echo "<table width=\"100%\">\n";
-    echo "<tbody>\n";
-    echo "<tr>\n";
-    echo "<th>Timeslot ID</th><th>Date</th><th>Time</th><th>Title</th><th>Hour/Credit</th>\n";
-    echo "</tr>\n";
-    
-    $hourcreditsum=0;
-    if (!($stmt = $mysqli->prepare("SELECT title, hour_credit, experiment_id FROM experiment WHERE experiment.experiment_id=?"))) {
-      echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
-    }
-    foreach($rows1 as $row1)
-    {
-      if(!$stmt->bind_param("i", $row1['experiment_id'])){
-        echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
-      }
+    if(!empty($rows1)){
+      echo "<table width=\"100%\">\n";
+      echo "<tbody>\n";
       echo "<tr>\n";
-      if (!$stmt->execute()) {
-        echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+      echo "<th>Timeslot ID</th><th>Date</th><th>Time</th><th>Title</th><th>Hour/Credit</th>\n";
+      echo "</tr>\n";
+    
+      $hourcreditsum=0;
+      if (!($stmt = $mysqli->prepare("SELECT title, hour_credit, experiment_id FROM experiment WHERE experiment.experiment_id=?"))) {
+        echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
       }
-      $result2 = $stmt->get_result();
-      $row2 = $result2->fetch_assoc();
-      echo "<td>".$row1['timeslot_id']."</td>\n";
-      echo "<td>".transformDateYearLast($row1['edate']).", ".dayofweek($row1['edate'])."</td>\n";
-      echo "<td>".time24to12($row1['etime'])."</td>\n";
-      echo "<td>".$row2['title']."</td>\n";
-      echo "<td>".$row2['hour_credit']."</td>\n";
-      echo "</tr>";
-      $hourcreditsum+=$row2['hour_credit'];
+      foreach($rows1 as $row1)
+      {
+        if(!$stmt->bind_param("i", $row1['experiment_id'])){
+          echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
+        }
+        echo "<tr>\n";
+        if (!$stmt->execute()) {
+          echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
+        }
+        $result2 = $stmt->get_result();
+        $row2 = $result2->fetch_assoc();
+        echo "<td>".$row1['timeslot_id']."</td>\n";
+        echo "<td>".transformDateYearLast($row1['edate']).", ".dayofweek($row1['edate'])."</td>\n";
+        echo "<td>".time24to12($row1['etime'])."</td>\n";
+        echo "<td>".$row2['title']."</td>\n";
+        echo "<td>".$row2['hour_credit']."</td>\n";
+        echo "</tr>";
+        $hourcreditsum+=$row2['hour_credit'];
+      }
+      $stmt->close();
+      echo "</tbody>\n";
+      echo "</table><br /><br />";
     }
-    $stmt->close();
-    echo "</tbody>\n";
-    echo "</table><br /><br />";
   }
   
   if ($messageCode!=0)

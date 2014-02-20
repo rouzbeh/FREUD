@@ -15,7 +15,7 @@ $editmode=0;
 
 <head>
 
-
+<link rel="stylesheet" href="style.css" type="text/css" />
 <style type="text/css">
           <!--
 
@@ -186,10 +186,7 @@ if (isset($_GET['action']))
           array_push($listofresearchers, $row['email']);
         }
 
-        echo "<form method=\"post\" action=\"\">\n";
-        echo "<table style='border-collapse:collapse; border: 1px solid #aaa; width: 100%'>\n";
-        echo "  <tbody>\n";
-
+        echo "<form method=\"post\" action=\"\" id=\"projectform\">\n";
         $stmt = $mysqli->prepare("SELECT * FROM experiment WHERE experiment_id=?");
         if(!$stmt) die("Prepare failed");
         $stmt->bind_param('i', $_GET['eid']);
@@ -199,97 +196,34 @@ if (isset($_GET['action']))
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         $stmt->close();
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "      title:\n";        
-        echo "      </td>\n";
-
-        echo "      <td>";
+        echo "<label>title:</label>\n";
         echo "<input type=\"text\" name=\"title\" maxlength=\"50\" value=\"".$row['title']."\">";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "      description:\n";        
-        echo "      </td>\n";
-
-        echo "      <td>";
+        echo "<label>description:</label>\n";        
         echo "<textarea name=\"description\" rows=\"20\" cols=\"50\">".$row['description']."</textarea>";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "      hour/credit:\n";        
-        echo "      </td>\n";
-
-        echo "      <td>";
+        echo "<label>hour/credit:</label>\n";        
         echo "<input type=\"text\" name=\"hour_credit\" maxlength=\"20\" value=\"".$row['hour_credit']."\">";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "      location:\n";        
-        echo "      </td>\n";
-
-        echo "      <td>";
+        echo "<label>location:</label>\n";        
         echo "<input type=\"text\" name=\"location\" maxlength=\"50\" value=\"".$row['location']."\">";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "      is open:\n";        
-        echo "      </td>\n";
-
-        echo "      <td>";
+        echo "<label>is open:</label>\n";        
         echo "<input type=\"checkbox\" name=\"isopen\"";
         if ($row['is_open']==1) echo "checked";
-        echo "></td>\n";
-        echo "    </tr>\n";
-
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "      is completed:\n";        
-        echo "      </td>\n";
-
-        echo "      <td><input type=\"checkbox\" name=\"iscompleted\"";
+        echo ">";
+        echo "<label>is completed:</label>\n";        
+        echo "<input type=\"checkbox\" name=\"iscompleted\"";
         if ($row['exp_completed']==1) echo "checked";
-        echo "></td>";
-        echo "    </tr>\n";
-
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "      researcher email:\n";        
-        echo "      </td>\n";
-
-        echo "      <td>\n";
-        echo "        <select name=\"researcher_email\">";
+        echo ">";
+        echo "<label>researcher email:</label>\n";        
+        echo "<select name=\"researcher_email\">";
         //offer list of all possible researchers
         while(list($key, $value) = each($listofresearchers)) 
         {
-          echo "          <option ";
+          echo "<option ";
           if (strcasecmp($value, $row['researcher_email'])==0) echo "selected=\"yes\"";
           echo ">".$value."</option>";
         }
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "  <tr>";
-
-        echo "  <td>advisor:</td><td>    ";
-        echo "  <input type=\"text\" class=\"textInput\"  name=\"advisor\" maxlength=\"3\" value=\"".$row['advisor']."\">";
-        echo "  </td>";
-        echo "  </tr>";
-
-        echo "    <tr>\n";
-        echo "      <td>Save changes:</td>\n";
-        echo "      <td><input type=\"submit\" name=\"submit\" value=\"submit\"></td>\n";
-        echo "    </tr>\n";
-
-        echo "  </tbody>\n";
-        echo "</table>\n";      
+        echo "<label>advisor:</label>\n";
+        echo "<input type=\"text\" class=\"textInput\"  name=\"advisor\" maxlength=\"3\" value=\"".$row['advisor']."\">";
+        echo "<input type=\"submit\" name=\"submit\" value=\"Save changes\">\n";
         echo "</form>\n";
         break;
       }

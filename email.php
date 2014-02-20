@@ -67,44 +67,33 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     }
 ?>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" class="emailForm">
-    <FIELDSET>
-    <legend>Send an email to <?php
+    <div>
+    <h1>Send an email to <?php
         if(isset($_GET['type']) && $_GET['type']=="experimenters"){
       echo "Experimenters";
     }
     elseif (isset($_GET['type']) && $_GET['type']=="all") {
       echo "EVERYONE";
-    }?></legend>
-    <table>
-    <tr>
-    <td>To:</td>
-    <td><textarea name="to" class='textInput' rows="1" cols="50"></textarea></td>
-    </tr>
-    <tr>
-    <td>BCC:</td>
-    <td><textarea name="bcc" class='textInput' rows="5" cols="50"><?php
+    }?></h1>
+    <label for="to">To:</label>
+    <textarea id="to" name="to" class='textInput' rows="1" cols="50"></textarea>
+    
+    <label for="bcc">BCC:</label>
+    <textarea id="bcc" name="bcc" class='textInput' rows="5" cols="50"><?php
     if(isset($_GET['type']) && $_GET['type']=="experimenters"){
       echo $experimenter_email_list;
     }
     elseif (isset($_GET['type']) && $_GET['type']=="all") {
       echo $email_list;
-    }?></textarea></td>
-    </tr>
-    <tr>
-    <td>Subject:</td>
-    <td><input type="text" name="subject" class='textInput' size="60" maxlength="100" value=""></td>
-    </tr>
-    <tr>
-    <td>Message:</td>
-    <td><textarea name="message" class='textInput' rows="7" cols="50"></textarea></td>
-    </tr>
-    <tr>
-    <td>
-    <input type="submit" name="submit" value="Send!">
-    </td>
-    </tr>
-    </table>
-    </FIELDSET>
+    }?></textarea>
+    
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" name="subject" class='textInput' size="60" maxlength="100" value="" />
+    
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" class='textInput' rows="7" cols="50"></textarea>
+    <input class="mySubmit" type="submit" name="submit" value="Send!">
+    </div>
     </form>
 <?php
   }

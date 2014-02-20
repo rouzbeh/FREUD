@@ -1,13 +1,11 @@
+:root {
+    var-colorOne: #B3B1B2;
+    var-colorTwo: #00ffcc;
+    var-colorThree: #cc00ff;
+}
+
 body {    
-    font-family:Arial,Helvetica,sans-serif;
-    /* MSIE 5 doesn't center based on auto left/right margins, 
-       but 'text-align:center' does center top-level divs: */
-    text-align: center;
-    /* Specify a min-width for the body as wide as the 'wrapper'
-       element itself. This prevents negative (i.e. inaccessible)
-       left-margins in narrow browser windows when using 
-       Navigator 6+/Mozilla on Win32: */
-    min-width: 896px;
+    font-family:Arial,Helvetica,sans-serif;   
 }
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
     margin:0pt;
@@ -40,30 +38,26 @@ h3{
    */
 #wrapperMatrjoska {    
     position: relative;
-    text-align: left;    
+    text-align: left;
+    top:1em;
     margin: 0px 50px;    
     min-height:500px;
-    min-width:866px;    
+    min-width:600px;
     height:auto !important;
     height:500px;
+    box-shadow: 0px 0px 15px #B3B1B2;
+    border-radius:6px;
 }
 
 #wrapper {     
-    padding-top: 9px;
-    padding-bottom: 23px;     
+    //padding-top: 9px;
+    padding-bottom: 23px;  
 }
 
 
-.wrapperShadow          { position: absolute; }
-#shadowLeft             { left:   -9px;  bottom:   19px;  width:   9px; height: 2000%; background: url(images/shaddow/Left.gif)             repeat-y;  }
-#shadowRight            { right:  -9px;  bottom:   19px;  width:   9px; height: 2000%; background: url(images/shaddow/Right.gif)            repeat-y; z-index:3}
-#shadowLeftUpperCorner  { left:   -9px;  top:    0px;   width:  19px; height: 19px; background: url(images/shaddow/1.gif)                 no-repeat; z-index:3}
-#shadowRightUpperCorner { right:  -9px;  top:    0px;   width:  19px; height: 19px; background: url(images/shaddow/2.gif)                 no-repeat; z-index:3}
-#shadowLeftLowerCorner  { left:   -9px;  bottom: 0px;   width:  19px; height: 19px; background: url(images/shaddow/4.gif)                 no-repeat; }
-#shadowRightLowerCorner { right:  -9px;  bottom: 0px;   width:  19px; height: 19px; background: url(images/shaddow/3.gif)                 no-repeat; }
-#shadowBottom           { left:    9px;  bottom: 0px;   width: 99%; height:  9px; background: url(images/shaddow/Bottom.gif)            repeat-x;  }
-#shadowTop              { left:    9px;  top:    0px;   width: 99%; height:  9px; background: url(images/shaddow/Top.gif)               repeat-x; z-index: 2; }
-
+.wrapperShadow{
+    position: absolute;
+}
 
 /*/////////////////////////*/
 /* 1. Main Content Section */
@@ -75,12 +69,15 @@ h3{
 }
 
 #text {     
+    position:relative;
     margin: 0px 35px 25px 35px;
     padding: 0px 0px 20px 0px;
     /*border: 1px solid #888;*/
     font-size:13px;
     line-height:1.3em;
-    min-height:1px;   
+    min-height:1px;
+    color:#47423F;
+    top:10px;
 }
 
 
@@ -100,7 +97,7 @@ h3{
 }
 
 #textRMatrjoska {    
-    float:left;    
+    float:left;
 }
 
 #textR {            
@@ -117,10 +114,21 @@ h3{
 
 /* HEADER CONTAINS LOGO AND HELPER */
 #header { 
-    background: url(images/top_bg.jpg) repeat-x right top;   
-    height:175px;
+    background-color: #527578;
+    height:150px;
     position:relative;
-    min-height: 1px;    
+    min-height: 1px;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+}
+
+#divLogo {
+    position:relative;
+    top:10px;
+    left:20px;
+    font-weight: bold;
+    font-size: xx-large;
+    color: #ADA692;
 }
 
 /* ADDS A NICE WHITE BORDER AROUND THE PAGE */
@@ -151,9 +159,7 @@ h3{
 #nav li {
     cursor: pointer;
     text-indent: -100em;
-    
     height: 36px;
-    
 }
 
 
@@ -394,10 +400,6 @@ table tr td{
     text-align: right; 
 } 
 
-input{
-    
-}
-
 .noborder{
     border: 0px solid white;
 }
@@ -406,64 +408,11 @@ input{
     border: 0px solid white;
 }
 
-#loginL{
-    width:40%; 
-    float:left;
-    
-    padding-top: 15px;   
-}
-
-#loginR{
-    position: relative;
-    margin-left: 20px;
-    margin-bottom: 90px;
-    margin-top: 20px;
-    float: right; 
-    width: 50%;
-    height: 241px; 
-    
-    background-image: url(images/login_screen.png);
-    background-position: left top;
-    background-repeat: no-repeat;
-}
-
-#loginR table{
-    width:auto;
-}
-
-#loginR input{
-    border: 1px solid rgb(51,204,255);
-    padding: 2px 5px;
-}
-
-#loginR table{
-    position: absolute;
-    left: 30px;
-    top: 75px;
-}
-
 #loginErr{
-    position: absolute;
-    top: 50px;
-    left: 40px; 
-    
-}
-
-
-#loginR .buttonSubmit{    
-    border: 1px solid #aaa;
-}
-
-#loginR table{
-    border: 0px solid white;      
-    background-color: white;
-}
-
-#loginR table tr td{
-    border: 0px solid white;
-    padding: 10px;
-    text-align: right;
-    
+    position: relative;
+    align:center;
+    color:red;
+    font-weight:bold;
 }
 
 #reg{
@@ -551,7 +500,7 @@ a:hover.button{
 }
 
 #researcherMenu p,#adminMenu p {
-    color: rgb(0,102,255);
+    color: #527578;
     font-weight: bold;
     font-size: 14px;
     padding: 10px 10px 20px 0px;    
@@ -571,7 +520,7 @@ table {
 }
 
 table tbody th{
-    background-color: rgb(102,153,255);
+    background-color: #b3b1b2;
     color: white;
     font-weight: bold;
     border: 0px solid white;
@@ -584,14 +533,31 @@ table tbody tr td{
 
 table .lichy{
     /*background-color: rgb(232,232,232);*/
-    background-color: rgb(235,235,255);
+    background-color: #ADA692;
 }
 
 table .sudy{
-    background-color: rgb(247,247,255);
+    background-color: #84978F;
 /*background-color: rgb(240,240,240);*/
 }
 
+table th:first-child {
+    -moz-border-radius: 6px 0 0 0;
+    -webkit-border-radius: 6px 0 0 0;
+    border-radius: 6px 0 0 0;
+}
+
+table th:last-child {
+    -moz-border-radius: 0 6px 0 0;
+    -webkit-border-radius: 0 6px 0 0;
+    border-radius: 0 6px 0 0;
+}
+
+table th:only-child{
+    -moz-border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+}
 
 .showIcon{   	
     font-weight:bold;
@@ -601,20 +567,6 @@ table .sudy{
     line-height:33px;  	
     text-decoration:none;
     width:410px;
-}
-
-input.textInput{
-    border: 1px solid rgb(51,204,255);
-    padding: 2px 5px;
-}
-
-textarea.textInput{
-    border: 1px solid rgb(51,204,255);
-    padding: 2px 5px;
-}
-
-fieldset{
-    font-weight:bold;
 }
 
 .generalErr{	    
@@ -710,6 +662,84 @@ fieldset{
     margin-top: 5px; 
 }
 
-.emailForm {
-    width : 50em;
+form {
+    background: -webkit-gradient(linear, center top, center bottom, color-stop(0%, #ADA692), color-stop(100%, #fff));
+    background: -moz-linear-gradient(top, #ADA692, #fff);
+    margin:auto;
+    position:relative;
+    width:550px;
+    height:auto;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 14px;
+    //font-style: italic;
+    line-height: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 10px;
+    padding:10px;
+    border: 1px solid #999;
+    border: inset 1px solid #333;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+#loginform {
+    position:relative;
+    width:30em;
+    height:15em;
+}
+
+#userform {
+    width:auto;
+}
+
+form h1{
+    text-align:center;
+}
+
+label {
+    display: block;
+    width:auto;
+}
+
+input[type="text"],input[type="password"],textarea   {
+    width:30em;
+    display:block;
+    border: 1px solid #999;
+}
+
+textarea:focus, input:focus {
+    border: 1px solid #ADA692;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+input[type="text"],input[type="password"] {
+    height: 25px;
+}
+
+input[type="submit"],input[type="reset"]{
+    width:100px;
+    position:absolute;
+    right:20px;
+    bottom:10px;
+    background:#47423F;
+    color:#fff;
+    font-family: Tahoma, Geneva, sans-serif;
+    height:30px;
+    border-radius: 5px;
+    border: 1p solid #999;
+}
+
+input[type="reset"]{
+    bottom:60px;
+}
+
+input[type="reset"]:hover,input[type="submit"]:hover {
+    background:#fff;
+    color:#47423F;
+}
+
+textarea.message { display:block;}
+
+select {
+    padding: 0.5em;
 }

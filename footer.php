@@ -2,10 +2,8 @@
           </div>         
          <div class="clear">
     </div> 
-    
-    </div>
   </div>
-  
+  </div>
    
   <div id="footerMatrjoska">
     <div id="footer">

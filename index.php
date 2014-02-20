@@ -64,50 +64,30 @@ if (isset($_SESSION['isConnected']))
 }
 include "header.php";
 ?>  
-<!-- bellow there is a space for a comment-->
  
-<div id='loginWrapper'>            
-    <div id='loginL'>
-    <font size="2"> 
-    <!-- type the comment here-->
-  
-<?php echo $welcome_message; ?>
-  
-    <!-- type the comment here-->
-    </font>
-    </div>  
-    <div id='loginR'>  
-    <form id='loginform' action="" method="post">
-    <table>
+<div id="loginWrapper">
+    <form id="loginform" action="" method="post">
+    <h1>
 <?php
     if ($messageCode!=0){
-      echo "<center id='loginErr'><font color=\"red\"><b>".$message."</b></font></center>\n";
-    }
-?>
-<tr>
-<td>Email:</td>
-<td ><input type="text" id="textinput" name="email" class="textinput" maxlength="25" /></td>
-    </tr>
-    <tr>
-    <td>Password:</td>
-    <td ><input type="password" id="passwordinput" name="passw1" class="textinput" maxlength="25" /></td>
-    </tr> 
-    <tr>
-    <td>&nbsp;</td>
-<td>&nbsp;</td> 
-<td><input type="submit" name="submit" value="Login" class="buttonSubmit" /></td>
-    </tr>       
-    </table>       
-    </form>  
-		
-    <a id='reg' href="register.php">Register</a>
-    <a id='forgot' href="forgotlogininfo.php">I can't log in</a> 
-</div>
-</div>
-
-<?php  
-  
-  include "disconnectDB.php";
-  
-  include "footer.php";
+      echo "<div id='loginErr'>".$message."</div>\n";}
+    else
+      echo $welcome_message; ?>
+</h1>
+<label for="email">Email:</label>
+        <input type="text" id="email" name="email" value="">
+        
+        <label for="passwordinput">Password:</label>
+        <input type="password" id="passwordinput" name="passw1" maxlength="25" />
+        
+        <input type="submit" name="submit" value="Login" class="buttonSubmit" />
+        
+        <a id='reg' href="register.php">Register</a>
+        <a id='forgot' href="forgotlogininfo.php">I cannot log in</a> 
+        </form>
+        </div>
+        
+<?php 
+        include "disconnectDB.php";
+include "footer.php";
 ?>

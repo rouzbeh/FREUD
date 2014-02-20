@@ -59,7 +59,7 @@
 <!--
 function newWindow(action, eid) 
 {
-    mywindow=window.open('showinfo.php?action=' + action + '&eid='+eid,'Info','resizable=yes,width=640,height=480');
+    mywindow=window.open('showinfo.php?action=' + action + '&eid='+eid,'Info','resizable=yes,width=640,height=665');
 }
 //-->
 </script>
@@ -105,7 +105,7 @@ function newWindow() {
 <!--
 function newWindow(action, eid) 
 {
-    mywindow=open('showinfo.php?action=' + action + '&eid='+eid,'Info','resizable=yes,width=640,height=640');
+    mywindow=open('showinfo.php?action=' + action + '&eid='+eid,'Info','resizable=yes,width=640,height=665');
 }
 //-->
 </script>
@@ -119,18 +119,10 @@ function newWindow(action, eid)
 <body onload='document.forms[0].elements[0].focus();'>
   
   <div id="wrapperMatrjoska">
-      <div id="shadowTop"    class="wrapperShadow"></div>
-      <div id="shadowBottom" class="wrapperShadow"></div> 
-      <div id="shadowRight"  class="wrapperShadow"></div>
-      <div id="shadowLeft"   class="wrapperShadow"></div> 
-      <div id="shadowRightUpperCorner" class="wrapperShadow"></div> 
-      <div id="shadowLeftUpperCorner"  class="wrapperShadow"></div>   
-      <div id="shadowRightLowerCorner" class="wrapperShadow"></div> 
-      <div id="shadowLeftLowerCorner"  class="wrapperShadow"></div> 
-  
   <div id="wrapper">    
       <div id="header">       
-                      <img src="images/top.jpg"  id="logo" alt="logo" title="logo"/>                                   
+      <div id="divLogo"><h1>FREUD</h1>
+      <h2>Experiment Management System<h2></div>
       </div>
       
       <div id="content">         
