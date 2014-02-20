@@ -5,27 +5,7 @@ require("require.php");
 require_once "Mail.php";
 include "loginCheck.php";
 include "connectDB.php";
-
-function send_email($to, $headers, $body) {
-  global $SMTPserver;
-  global $SMTPPort;
-  global $SMTPAuth;
-  global $SMTPUsername;
-  global $SMTPPassword;
-
-  $smtp = Mail::factory('smtp', array(
-      'host' => $SMTPserver,
-      'port' => $SMTPPort,
-      'auth' => $SMTPAuth,
-      'username' =>  $SMTPUsername,
-      'password' => $SMTPPassword));
-  $mail = $smtp->send($to, $headers, $body);
-  if (PEAR::isError($mail)) {
-    echo("<p>" . $mail->getMessage() . "</p>");
-  } else {
-    echo("Email sent!");
-  }
-}
+include "helper.php";
 
 if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   $messageCode=0;
