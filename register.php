@@ -57,11 +57,11 @@ if (isset($_POST['submit']))
   if ($messageCode==0)
   {
     // here we encrypt the password and add slashes if needed
-    $_POST['passw1'] = md5($_POST['passw1']);
+    $_POST['passw1'] = password_hash($_POST['passw1'], PASSWORD_DEFAULT);
     if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") $receive=1;
     else $receive=0;
       
-    $validUser=substr(md5($_POST['email'].time()),0, 19);
+    $validUser=substr(sha256($_POST['email'].time()),0, 19);
       
     //now we insert it into the database 
     if (!($stmt = $mysqli->prepare("INSERT INTO user VALUES (?, ?, ?, ?, 'participant', ?, ?, ?)"))) {

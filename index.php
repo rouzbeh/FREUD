@@ -42,7 +42,7 @@ if (isset($_POST['submit']))
     $row = mysqli_fetch_array($result);
       
     //create session variables, if passwords match
-    if (md5($_POST['passw1'])==$row['password'])
+    if (password_verify($_POST['passw1'],$row['password']))
     {
       $_SESSION['isConnected']=1;
       $_SESSION['email'] = $_POST['email'];

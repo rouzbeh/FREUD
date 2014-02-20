@@ -45,13 +45,13 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           //reset password to default
           $stmt = $mysqli->prepare("UPDATE user SET password = ? WHERE email = ?");
           if(!$stmt) die("Prepare failed");
-          $stmt->bind_param('ss', $default_password, $_GET['id']);
+          $stmt->bind_param('ss', password_hash($the_default_password, PASSWORD_DEFAULT), $_GET['id']);
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
           $stmt->close();
           $messageCode=1;
-          $message="Password for ".$_GET['id']." changed to '". $default_password . "'.";
+          $message="Password for ".$_GET['id']." changed to '". $the_default_password . "'.";
           break;
         }
       case 3:

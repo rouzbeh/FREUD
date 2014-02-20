@@ -33,7 +33,7 @@ if (isset($_POST['submit']))
       $stmt->bind_result($result);
       /* fetch value */
       $stmt->fetch();
-      if ($result!=md5($_POST['oldpassword']))
+      if (!password_verify($_POST['oldpassword'],$result))
       {               
         $message         = 'Old password does not match.';
         $messageCode=2;
@@ -52,11 +52,12 @@ if (isset($_POST['submit']))
   //save a new password to database
   if ($messageCode==0)
   {
-    echo (md5($_POST['newpassword1']));
-    echo ($_SESSION['email']);
     if ($stmt = $mysqli->prepare("UPDATE user SET password=? WHERE email=?")) {
-      $md5password = md5($_POST['newpassword1']);
-      $stmt->bind_param("ss", $md5password, $_SESSION['email']);
+      $hashed_password = password_hash($_POST['newpassword1'], PASSWORD_DEFAULT);
+      if(!$stmt->bind_param("ss", $hashed_password, $_SESSION['email'])){
+        echo "Bind failed: (" . $mysqli->errno . ") " . $mysqli->error;
+      }
+      
       if ($stmt->execute()) {
         $message = 'Password changed.';
         $messageCode=4;

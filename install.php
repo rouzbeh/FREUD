@@ -46,7 +46,7 @@ $query = "
  CREATE  TABLE  `" . $databasename . "`.`user` (  `email` varchar( 40  )  COLLATE latin1_general_ci NOT  NULL DEFAULT  '',
  `name` varchar( 20  )  COLLATE latin1_general_ci NOT  NULL DEFAULT  '',
  `surname` varchar( 20  )  COLLATE latin1_general_ci NOT  NULL DEFAULT  '',
- `password` varchar( 50  )  COLLATE latin1_general_ci NOT  NULL DEFAULT  '',
+ `password` varchar( 100  )  COLLATE latin1_general_ci NOT  NULL DEFAULT  '',
  `role` varchar( 20  )  COLLATE latin1_general_ci NOT  NULL DEFAULT  '',
  `receiveMail` int( 11  )  NOT  NULL DEFAULT  '0',
  `validUser` varchar( 20  )  COLLATE latin1_general_ci  DEFAULT NULL ,
@@ -55,7 +55,7 @@ $query = "
   ";
  mysqli_query($conn, $query) or die(mysqli_error($conn));
  $query = "
- INSERT INTO `" . $databasename . "`.`user` (`email`, `name`, `surname`, `password`, `role`, `receiveMail`, `validUser`, `classyear`) VALUES ('" . $server_email_address . "', 'Admin', 'Admin', '" . $default_password . "', 'admin', '1', '0', 'admin');
+ INSERT INTO `" . $databasename . "`.`user` (`email`, `name`, `surname`, `password`, `role`, `receiveMail`, `validUser`, `classyear`) VALUES ('" . $server_email_address . "', 'Admin', 'Admin', '" . password_hash($the_default_password, PASSWORD_DEFAULT) . "', 'admin', '1', '0', 'admin');
  ";
  mysqli_query($conn, $query) or die(mysqli_error($conn));
 echo "Install Complete";
