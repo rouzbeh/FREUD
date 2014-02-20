@@ -90,12 +90,6 @@ if (isset($_POST['submit']))
     mail($email,$subject,$emailmessage, $headers);
     //echo $emailmessage."<br>";
 
-    $myFile = "confirmreg.html";
-    $fh = fopen($myFile, 'w');
-    fwrite($fh, $email."<br>");
-    fwrite($fh, $subject."<br>");
-    fwrite($fh, $emailmessage."<br>");
-    fclose($fh);
   }
 } 
 include "header.php";
