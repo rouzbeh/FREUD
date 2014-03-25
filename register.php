@@ -27,16 +27,15 @@ if (isset($_POST['submit']))
       
     $stmt = $mysqli->prepare("SELECT email FROM user WHERE email=?");
     if(!$stmt) die("Prepare failed");
-    $stmt->bind_param('i', $_POST['email']);
+    $stmt->bind_param('s', $_POST['email']);
     if (!$stmt->execute()) {
       echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
     $result = $stmt->get_result();
     $stmt->close();
-    $check2 = mysqli_num_rows($result);
 
     //if the name exists it gives an error
-    if ($check2 != 0) 
+    if ($result->num_rows>0) 
     {
       $message = "Sorry, the user with email address '".$_POST['email']."' is already in use.";
       $messageCode=3;
@@ -60,9 +59,9 @@ if (isset($_POST['submit']))
     $_POST['passw1'] = password_hash($_POST['passw1'], PASSWORD_DEFAULT);
     if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") $receive=1;
     else $receive=0;
-      
-    $validUser=substr(sha256($_POST['email'].time()),0, 19);
-      
+
+    $validUser=substr(hash("sha256", $_POST['email'].time()),0, 19);
+
     //now we insert it into the database 
     if (!($stmt = $mysqli->prepare("INSERT INTO user VALUES (?, ?, ?, ?, 'participant', ?, ?, ?)"))) {
       echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
@@ -99,41 +98,19 @@ include "header.php";
     <br /><br /><br />
     <!-- Form with text fields etc. -->
     <form action="" method="post">
-    <table style='width:auto'>
-        
     <tr><th colspan='2'>New User</tr>
     <tr>
-    <td>Email</td>
-    <td>
+    <label>Email</label>
     <input type="text" class='textInput' name="email" maxlength="40" value="<?php if ($messageCode!=0){echo $_POST['email'];} ?>">
-    </td>
-    </tr>
-    <tr>
-    <td>First name:</td><td>
+    <label>First name</label>
     <input type="text" name="name" class='textInput' maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['name'];} ?>">
-    </td>
-    </tr>
-    <tr>
-    <td>Last name:</td>
-    <td>
+    <label>Last name</label>
     <input type="text" name="surname"  class='textInput' maxlength="20" value="<?php if ($messageCode!=0){echo $_POST['surname'];} ?>">
-    </td>
-    </tr>
-    <tr>
-    <td>Password:</td>
-    <td>
+    <label>Password</label>
     <input type="password" name="passw1"  class='textInput' maxlength="20">
-    </td>
-    </tr>
-    <tr>
-    <td>Re-enter password:</td>
-    <td>
+    <label>Re-enter password</label>
     <input type="password" name="passw2" class='textInput'  maxlength="20">
-    </td>
-    </tr>
-    <tr>
-    <td>Class year:</td>
-    <td>
+    <label>Class year</label>
     <select name="classyear">
 <?php
     $datenow=date("Y");
@@ -146,23 +123,12 @@ for ($ii=0; $ii<5; $ii++)
 }
 ?>
 </select>
-</td>
-</tr>
-<tr>
-<td>Check this box to receive <br>weekly emails to notify you of <br>all the research <br>opportunities available:</td>
-<td>
+<label>Check this box to receive <br>weekly emails to notify you of <br>all the research <br>opportunities available:</label>
 <input type="checkbox" name="receiveMail" <?php if ($messageCode!=0){ if (isset($_POST['receiveMail']) && $_POST['receiveMail']=="on") echo "checked";} ?>>
-</td>
-</tr>
-<tr>
-<td colspan=2>
-    <input type="submit" name="submit" value="Register">
-    <input type="submit" name="back" value="Back">
-    </td>
-    </tr> 
-    </table>
+<input type="submit" name="submit" value="Register">
+    <!--<input type="submit" name="back" value="Back">-->
     </form>
-
+    
 <?php 
     //} 
     include "disconnectDB.php";
