@@ -4,7 +4,7 @@
 // General Information
 // The title of the website.
 $FREUD_title = "FREUD";
-$FREUD_subtitle = "Participant management system;
+$FREUD_subtitle = "Participant management system";
 
 // Welcome Message -  This message is displayed on the home page.
 $welcome_message = "Welcome!";
@@ -43,4 +43,19 @@ $SMTPAuth = true;
 $SMTPUsername = '';
 $SMTPPassword = '';
 
+if(!function_exists("password_hash")){
+    include ( 'PasswordHash.php' );
+    define('PASSWORD_DEFAULT', '');
+    function password_hash($pass, $something){
+        $hash_obj = new PasswordHash( 8, false );
+        $hash = $hash_obj->HashPassword( $pass );
+        return $hash;
+    }
+    
+    function password_verify($pass, $truth){
+        $hash_obj = new PasswordHash( 8, false );
+        $check = $hash_obj->CheckPassword( $pass, $truth );
+        return $check;
+    }
+}
 ?>
