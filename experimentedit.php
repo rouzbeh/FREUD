@@ -80,6 +80,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
           if (!$stmt->execute()) {
             echo "Execute failed: (" . $mysqli->errno . ") " . $mysqli->error;
           }
+	  $result = $stmt->get_result();
           $stmt->close();
           while($row = $result->fetch_assoc())
           {       
