@@ -1,5 +1,5 @@
 <?php
-
+require_once 'Mail.php';
 function send_email($to, $headers, $body) {
   global $SMTPserver;
   global $SMTPPort;
@@ -80,7 +80,7 @@ function sendMailToParticipants($id){
       'Reply-To' => $row2['researcher_email'],
       'Bcc' => '$email',
       'Subject' => $subject);
-  send_email($to,$headers,$message);
+  send_email($to,$headers,$emailmessage);
 }
 
 
