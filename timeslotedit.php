@@ -269,10 +269,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
 ?>
 
     <form name="data" action="<?php echo $filename;?>" method="post">
-    <table style="width:auto">  
-    <tr><th colspan='5'>New Timeslot</th></tr>
-    <tr>
-    <td>Experiment:</td><td>
+    <label>Experiment:</label>
     <select name="experiment_id">
 <?php
 
@@ -284,32 +281,16 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
     }
 ?>
     </select>
-    </td>
-    </tr>
-    <tr>
-
-    <td>Date:<br><small>(mm/dd/yyyy)</small></td><td>
+    <label>Date <small>(mm/dd/yyyy)</small> :</label>
     <input type="text" class='textInput' name="edate" maxlength="10" value="<?php if ($rememberFormValues!=0 && isset($_POST['edate'])){echo $original_date;} ?>" >
-    </td>
-    <td>
     <a style='text-decoration:underline; cursor:hand;' onClick="newWindow()">Show calendar</a>
-    </td>
-    </tr>
-
 <?php
     for ($ii=1; $ii<=$iimax; $ii++)
     {
       printTimeslot($ii, $iimax);
     }
 ?>
-
-    <tr>
-    <td colspan=2>
-    <input type="submit" name="submit" value="Create the above slots">
-    <input type="submit" name="reset" value="Reset">
-    </td>
-    </tr> 
-    </table>
+    <br/><br/><input type="submit" name="submit" value="Create the above slots"><br/>
     </form>
 
 <?php 

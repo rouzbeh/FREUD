@@ -203,8 +203,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   </select>
   <label for="advisor">Advisor:</label>    
   <input type="text" class="textInput" id="advisor" name="advisor" maxlength="3" value="<?php if ($messageCode!=0){echo $_POST['advisor'];} ?>">
-  <input type="submit" name="submit" value="Create">
-  <input type="reset" name="reset" value="Reset">
+  <input type="submit" name="submit" value="Create"><br/>
   </form>
 
 <?php 

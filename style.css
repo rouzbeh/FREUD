@@ -416,15 +416,9 @@ table tr td{
 }
 
 #reg{
-    position: absolute;
-    left: 60px;
-    bottom: 20px;
 }
 
 #forgot{
-    position: absolute;
-    left: 130px;
-    bottom: 20px;
 }
 
 /* -------------------- */
@@ -684,8 +678,8 @@ form {
 
 #loginform {
     position:relative;
-    width:30em;
-    height:15em;
+    width:23em;
+    height:11em;
 }
 
 #userform {
@@ -717,10 +711,8 @@ input[type="text"],input[type="password"] {
 }
 
 input[type="submit"],input[type="reset"]{
-    width:100px;
-    position:absolute;
-    right:20px;
-    bottom:10px;
+    float:right;
+    min-width:100px;
     background:#47423F;
     color:#fff;
     font-family: Tahoma, Geneva, sans-serif;

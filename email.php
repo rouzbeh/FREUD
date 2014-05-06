@@ -72,7 +72,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
     
     <label for="message">Message:</label>
     <textarea id="message" name="message" class='textInput' rows="7" cols="50"></textarea>
-    <input class="mySubmit" type="submit" name="submit" value="Send!">
+    <input class="mySubmit" type="submit" name="submit" value="Send!"><br/>
     </div>
     </form>
 <?php

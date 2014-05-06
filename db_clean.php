@@ -46,7 +46,7 @@ if(isset($_SESSION['permission']) && $_SESSION['permission']=="admin"){
       <input type="hidden" name="timeslot" value="<?php echo $_POST['timeslot'];?>">
       <input type="hidden" name="user" value="<?php echo $_POST['user'];?>">
       <input type="hidden" name="grad" value="<?php echo $_POST['grad'];?>">
-      <br /><input type="submit" value="Delete" style="margin-left:130px">
+      <input type="submit" value="Delete" style="margin-left:130px"><br/>
       </form>
       <br /><br />
       <form action="db_clean.php" method="post">
@@ -122,7 +122,7 @@ if(isset($_SESSION['permission']) && $_SESSION['permission']=="admin"){
     <input type="checkbox" name="user" >
     <label>Graduated users</label>
     <input type="checkbox" name="grad" >
-    <br /><input type="submit" value="Delete" style="margin-left:130px">
+    <input type="submit" value="Delete" style="margin-left:130px"><br/>
     </form>
 <?php
 	  

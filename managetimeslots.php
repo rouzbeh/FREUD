@@ -280,11 +280,10 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin" || $_SESS
       printTimeslot($ii, $iimax);
     }
 ?> 
-    <input type="submit" name="submit" style="width:auto" value="Create the above slots">
+    <br/><br/><input type="submit" name="submit" value="Create the above slots"><br/>
     </form>
     <!--
     <form name="data2" action=<?php echo '"'.$filename; echo '?experiment_id='.$experiment_id.'#add@"';?> method="POST">
-    <input type="submit" value="Reset">
     </form>-->
 
 <?php 

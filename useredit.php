@@ -256,7 +256,7 @@ if(isset($_SESSION['permission']) && ($_SESSION['permission']=="admin")){
   echo "  </tbody>\n";
   echo "</table>\n";
   echo "<input type=\"hidden\" name=\"usersTotal\" value=\"".$num."\">\n";
-  echo "<input type=\"submit\" name=\"deleteselected\" style=\"bottom:-35px\"  value=\"Delete selected\">\n";
+  echo "<input type=\"submit\" name=\"deleteselected\" style=\"bottom:-35px\"  value=\"Delete selected\"><br/>";
   echo "</form>\n";
   include "footer.php";
 } else {
